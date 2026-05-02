@@ -26,7 +26,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="sticky top-4 z-50 mb-8 mx-auto w-full max-w-6xl px-4 md:px-0">
+    <nav className="sticky top-4 z-50 mb-8 mx-auto w-full md:max-w-6xl lg:max-w-6xl px-4 md:px-0">
       
       <ProfileModal 
         isOpen={showProfile} 
@@ -34,12 +34,13 @@ const Navbar = () => {
       />
 
       <div className="glass-panel px-6 py-4 flex justify-between items-center shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
-        <Link to="/" className="text-2xl font-black flex items-center gap-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent transform transition-transform hover:scale-105 active:scale-95">
-          <span className="text-2xl drop-shadow-lg">✨</span>
-          CardCraft
+        <Link to="/" className="text-xl sm:text-2xl font-black flex items-center gap-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent transform transition-transform hover:scale-105 active:scale-95">
+          {/* <span className="text-xl sm:text-2xl drop-shadow-lg">✨</span> */}
+          <span className="hidden min-[360px]:block">CardCraft</span>
         </Link>
         
-        <div className="flex items-center gap-4 md:gap-6">
+        <div className="flex items-center gap-2 md:gap-6">
+
           {/* Theme Toggle */}
           <div className="relative">
             <button 
@@ -135,7 +136,8 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <Link to="/login" className="btn btn-primary !px-6 !py-2.5 !rounded-full shadow-xl">Login</Link>
+            <Link to="/login" className="btn btn-primary !px-4 sm:!px-6 !py-2 !sm:py-2.5 !rounded-full shadow-xl text-sm sm:text-base">Login</Link>
+
           )}
         </div>
       </div>
