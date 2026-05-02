@@ -1,6 +1,6 @@
-#  CardCraft - Personalized Wishes
-
-**CardCraft** is a premium, AI-powered greeting card studio that allows users to create, personalize, and share high-fidelity wishes in seconds. Whether it's a birthday, anniversary, or festival, CardCraft provides a seamless experience from design to delivery.
+# CardCraft - Personalized Wishes
+ 
+**CardCraft** is a premium wishes and greeting card studio that allows users to create, personalize, and share high-fidelity greeting cards in seconds. Whether it’s a birthday, anniversary, or festival, CardCraft delivers a seamless experience from design to delivery.
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61DAFB)
