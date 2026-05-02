@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Midnight Theme (Default) */
+  --color-background: 10 10 15;
+  --color-surface: 20 20 29;
+  --color-primary: 99 102 241;
+  --color-secondary: 139 92 246;
+  --color-premium: 251 191 36;
+  --color-premium-dark: 217 119 6;
+  --color-text: 255 255 255;
+}
+
+[data-theme='cloud'] {
+  --color-background: 248 250 252;
+  --color-surface: 255 255 255;
+  --color-primary: 79 70 229;
+  --color-secondary: 124 58 237;
+  --color-premium: 245 158 11;
+  --color-premium-dark: 180 83 9;
+  --color-text: 15 23 42;
+}
+
+[data-theme='royal'] {
+  --color-background: 20 10 35;
+  --color-surface: 35 15 60;
+  --color-primary: 217 70 239;
+  --color-secondary: 168 85 247;
+  --color-premium: 253 224 71;
+  --color-premium-dark: 202 138 4;
+  --color-text: 255 255 255;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-maintext min-h-screen antialiased transition-colors duration-300;
+  }
+}
+
+
+@layer components {
+  .glass-panel {
+    @apply bg-surface/50 backdrop-blur-md border border-white/10 rounded-2xl;
+  }
+  
+  [data-theme='cloud'] .glass-panel {
+    @apply bg-white/80 border-black/5 shadow-sm;
+  }
+  
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-semibold transition-all duration-300 gap-2;
+  }
+  
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary to-secondary text-white hover:-translate-y-0.5 hover:shadow-[0_0_25px_rgba(var(--color-primary),0.4)];
+  }
+  
+  .btn-premium {
+    @apply bg-gradient-to-r from-premium to-premium-dark text-slate-900 hover:-translate-y-0.5 hover:shadow-[0_0_25px_rgba(var(--color-premium),0.4)];
+  }
+  
+  .btn-outline {
+    @apply bg-transparent border border-primary/20 text-maintext hover:bg-primary/5;
+  }
+}
+
+
+/* Custom Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.4);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+/* Utility for hidden but scrollable containers */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.5);
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+/* Custom Range Input Styles */
+input[type='range'] {
+  @apply accent-primary;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+  @apply rounded-lg;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  @apply w-4 h-4 bg-primary border-2 border-white rounded-full appearance-none -mt-1.5 shadow-lg active:scale-110 transition-transform;
+}
+
+[data-theme='cloud'] input[type='range']::-webkit-slider-thumb {
+  @apply border-primary/20;
+}
