@@ -258,12 +258,15 @@ const Home = () => {
 
     setIsNativeSharing(true);
     try {
-      // 1. Generate the image instantly
-      const canvas = await html2canvas(element, { 
+      // 1. Generate the image instantly using wide-angle area
+      const captureElement = document.getElementById('capture-area');
+      const canvas = await html2canvas(captureElement, { 
         useCORS: true, 
         scale: 3, 
-        backgroundColor: null,
+        backgroundColor: '#0a0a0a',
         logging: false,
+        x: 0,
+        width: captureElement.offsetWidth,
         onclone: (clonedDoc) => {
           const clonedElement = clonedDoc.getElementById('card-preview');
           if (clonedElement) clonedElement.style.transform = 'none';
@@ -304,13 +307,16 @@ const Home = () => {
     setIsDownloading(true);
     try {
       await new Promise(r => setTimeout(r, 500));
-      // Use the capture wrapper to ensure floating elements aren't cut off
-      const canvas = await html2canvas(document.getElementById('capture-area'), {
+      // Use wide-angle capture area to include floating profile pic
+      const captureElement = document.getElementById('capture-area');
+      const canvas = await html2canvas(captureElement, {
         useCORS: true,
         allowTaint: true,
-        backgroundColor: null,
-        scale: 2, // High quality
-        logging: false
+        backgroundColor: '#0a0a0a',
+        scale: 2,
+        logging: false,
+        x: 0,
+        width: captureElement.offsetWidth,
       });
       const url = canvas.toDataURL('image/png');
       const a = document.createElement('a');
@@ -395,7 +401,8 @@ const Home = () => {
           
           {/* Design Studio Overlay */}
           {selectedTemplate && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-black/95 backdrop-blur-2xl animate-[fadeIn_0.3s_ease_out] overflow-y-auto">
+            <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0a0a0a] bg-[radial-gradient(circle_at_50%_-20%,#3d3d3d,transparent)] flex items-center justify-center p-4">
+            <div className="w-full max-w-[1400px] animate-[slideUp_0.4s_ease_out]">
               <div className="relative w-full max-w-7xl mx-auto flex flex-col gap-6 my-auto">
                 
                 <div className="flex justify-between items-center px-4">
@@ -703,7 +710,8 @@ const Home = () => {
                 </div>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
           {/* Template Grid */}
           <div>

@@ -61,7 +61,7 @@ const ViewCard = () => {
   const { templateImageUrl, message, textStyle, decorations, senderName, senderProfilePic } = card;
 
   return (
-    <div className="flex flex-col items-center py-12 px-12 animate-[fadeIn_0.5s_ease_out] max-w-4xl mx-auto overflow-x-visible">
+    <div className="min-h-screen bg-[#0a0a0a] bg-[radial-gradient(circle_at_50%_-20%,#3d3d3d,transparent)] flex flex-col items-center py-12 px-12 animate-[fadeIn_0.5s_ease_out] max-w-4xl mx-auto overflow-x-visible">
       {/* Brand Tag */}
       <div className="mb-12">
         <Link to="/" className="bg-white/10 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/10 shadow-lg group hover:bg-white/20 transition-all flex items-center gap-3">
