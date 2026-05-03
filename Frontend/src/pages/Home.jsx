@@ -240,29 +240,48 @@ const Home = () => {
   };
 
   const shareCard = async () => {
-    if (isNativeSharing) return;
-    setIsNativeSharing(true);
-    
-    const shareData = {
-      title: 'My Personalized Wish ✨',
-      text: `I created a special wish for you! Check it out here:\n${generatedLink}`,
-      url: generatedLink
-    };
+    const element = document.getElementById('card-preview');
+    if (!element || isNativeSharing) return;
 
+    setIsNativeSharing(true);
     try {
-      if (navigator.share) {
-        await navigator.share(shareData);
+      // 1. Generate the image instantly
+      const canvas = await html2canvas(element, { 
+        useCORS: true, 
+        scale: 3, 
+        backgroundColor: null,
+        logging: false,
+        onclone: (clonedDoc) => {
+          const clonedElement = clonedDoc.getElementById('card-preview');
+          if (clonedElement) clonedElement.style.transform = 'none';
+        }
+      });
+
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      const file = new File([blob], 'cardcraft-wish.png', { type: 'image/png' });
+
+      // 2. Share the FILE directly
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'Your Personalized Wish'
+        });
       } else {
-        // Fallback for Desktop: Open WhatsApp directly
-        window.open(`https://wa.me/?text=${encodeURIComponent(shareData.text)}`, '_blank');
+        // Fallback: If browser doesn't support file share, trigger download so they have the file
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'cardcraft-wish.png';
+        a.click();
+        URL.revokeObjectURL(url);
+        alert("Native image sharing is not supported on this browser. Your card has been downloaded instead!");
       }
     } catch (err) {
       if (err.name !== 'AbortError') {
-        window.open(`https://wa.me/?text=${encodeURIComponent(shareData.text)}`, '_blank');
+        console.error('Direct Share Error:', err);
       }
     } finally {
       setIsNativeSharing(false);
-      try { navigator.clipboard.writeText(generatedLink); } catch (e) {}
     }
   };
 
