@@ -61,7 +61,7 @@ const ViewCard = () => {
   const { templateImageUrl, message, textStyle, decorations, senderName, senderProfilePic } = card;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] bg-[radial-gradient(circle_at_50%_-20%,#3d3d3d,transparent)] flex flex-col items-center py-12 px-12 animate-[fadeIn_0.5s_ease_out] max-w-4xl mx-auto overflow-x-visible">
+    <div className="min-h-screen flex flex-col items-center py-12 px-12 animate-[fadeIn_0.5s_ease_out] transition-colors duration-700" style={{ backgroundColor: card.outerBgColor || '#0a0a0a' }}>
       {/* Brand Tag */}
       <div className="mb-12">
         <Link to="/" className="bg-white/10 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/10 shadow-lg group hover:bg-white/20 transition-all flex items-center gap-3">
@@ -72,7 +72,10 @@ const ViewCard = () => {
       </div>
 
       {/* Card Canvas Container */}
-      <div className="relative w-full max-w-[440px] aspect-[4/5] rounded-[3rem] shadow-[0_32px_80px_rgba(0,0,0,0.8)] bg-black ring-1 ring-white/10 overflow-visible">
+      <div 
+        className="relative w-full aspect-[4/5] rounded-[3rem] shadow-[0_32px_80px_rgba(0,0,0,0.8)] bg-black ring-1 ring-white/10 overflow-visible transition-all duration-500"
+        style={{ maxWidth: `${card.cardSize || 440}px` }}
+      >
 
         {/* Actual Card Body (clipped) */}
         <div className="absolute inset-0 rounded-[3rem] overflow-hidden">
@@ -83,21 +86,30 @@ const ViewCard = () => {
             </h3>
           </div>
 
-          {/* Main Image Layer */}
+          {/* Main Image Layer or Color Layer */}
           <div className="absolute inset-0 pt-24 pb-0">
-            <img
-              src={templateImageUrl}
-              alt="Card Background"
-              crossOrigin="anonymous"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+            {card.backgroundMode === 'color' ? (
+              <div 
+                className="w-full h-full" 
+                style={{ background: card.backgroundColor || '#6366f1' }}
+              ></div>
+            ) : (
+              <>
+                <img
+                  src={templateImageUrl}
+                  alt="Card Background"
+                  crossOrigin="anonymous"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+              </>
+            )}
           </div>
 
           {/* Custom Wish Message Overlay */}
           <div className={`absolute inset-0 pt-32 p-12 flex flex-col pointer-events-none z-20 text-center ${textStyle.position === 'top' ? 'justify-start' :
-              textStyle.position === 'bottom' ? 'justify-end pb-24' :
-                'justify-center'
+            textStyle.position === 'bottom' ? 'justify-end pb-24' :
+              'justify-center'
             }`}>
             <p
               className="font-black leading-tight italic tracking-tight drop-shadow-2xl"

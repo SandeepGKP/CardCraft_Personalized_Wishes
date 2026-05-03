@@ -7,6 +7,10 @@ const cardSchema = new mongoose.Schema(
       required: true,
     },
     templateName: String,
+    backgroundMode: { type: String, default: 'image' },
+    backgroundColor: { type: String, default: '#6366f1' },
+    outerBgColor: { type: String, default: '#0a0a0a' },
+    cardSize: { type: Number, default: 440 },
     message: String,
     textStyle: {
       fontSize: Number,

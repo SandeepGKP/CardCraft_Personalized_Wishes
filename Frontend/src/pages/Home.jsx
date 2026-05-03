@@ -43,6 +43,10 @@ const Home = () => {
   const [textSize, setTextSize] = useState(32);
   const [textColor, setTextColor] = useState('#ffffff');
   const [textPosition, setTextPosition] = useState('center');
+  const [backgroundMode, setBackgroundMode] = useState('image');
+  const [backgroundColor, setBackgroundColor] = useState('#6366f1');
+  const [outerBgColor, setOuterBgColor] = useState('#0a0a0a');
+  const [cardSize, setCardSize] = useState(440);
   const [fontFamily, setFontFamily] = useState("'Inter', sans-serif");
   const [decorations, setDecorations] = useState([]);
   const [isDragging, setIsDragging] = useState(null);
@@ -222,8 +226,12 @@ const Home = () => {
     setIsGenerating(true);
     try {
       const cardData = {
-        templateImageUrl: selectedTemplate.imageUrl,
+        templateImageUrl: backgroundMode === 'image' ? selectedTemplate.imageUrl : null,
         templateName: selectedTemplate.name || selectedTemplate.category,
+        backgroundMode: backgroundMode,
+        backgroundColor: backgroundColor,
+        outerBgColor: outerBgColor,
+        cardSize: cardSize,
         message: customMessage || "",
         textStyle: {
           fontSize: textSize || 24,
@@ -263,7 +271,7 @@ const Home = () => {
       const canvas = await html2canvas(captureElement, {
         useCORS: true,
         scale: 3,
-        backgroundColor: '#0a0a0a',
+        backgroundColor: outerBgColor,
         logging: false,
         x: 0,
         width: captureElement.offsetWidth,
@@ -312,7 +320,7 @@ const Home = () => {
       const canvas = await html2canvas(captureElement, {
         useCORS: true,
         allowTaint: true,
-        backgroundColor: '#0a0a0a',
+        backgroundColor: outerBgColor,
         scale: 2,
         logging: false,
         x: 0,
@@ -418,8 +426,8 @@ const Home = () => {
 
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 lg:h-[85vh]">
                     {/* Canvas */}
-                    <div id="capture-area" className="p-10 flex items-center justify-center overflow-visible">
-                      <div id="card-preview" className="relative w-full max-w-[440px] aspect-[4/5] rounded-[2.5rem] shadow-2xl bg-black ring-1 ring-white/10 overflow-visible">
+                    <div id="capture-area" className="p-10 flex items-center justify-center overflow-visible transition-colors duration-500" style={{ backgroundColor: outerBgColor }}>
+                      <div id="card-preview" className="relative w-full aspect-[4/5] rounded-[2.5rem] shadow-2xl bg-black ring-1 ring-white/10 overflow-visible transition-all duration-300" style={{ maxWidth: `${cardSize}px` }}>
 
                         {/* Inner body to clip background images but not profile pic */}
                         <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden">
@@ -430,16 +438,25 @@ const Home = () => {
                             </h3>
                           </div>
 
-                          {/* Main Image Layer */}
+                          {/* Main Image Layer or Color Layer */}
                           <div className="absolute inset-0 pt-24 pb-0">
-                            <img src={selectedTemplate.imageUrl} alt="" crossOrigin="anonymous" className="w-full h-full object-cover" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                            {backgroundMode === 'image' ? (
+                              <>
+                                <img src={selectedTemplate.imageUrl} alt="" crossOrigin="anonymous" className="w-full h-full object-cover" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                              </>
+                            ) : (
+                              <div
+                                className="w-full h-full animate-[fadeIn_0.5s_ease_out]"
+                                style={{ background: backgroundColor }}
+                              ></div>
+                            )}
                           </div>
 
                           {/* Custom Wish Message Overlay */}
                           <div className={`absolute inset-0 pt-32 p-12 flex flex-col pointer-events-none z-20 text-center ${textPosition === 'top' ? 'justify-start' :
-                              textPosition === 'bottom' ? 'justify-end pb-24' :
-                                'justify-center'
+                            textPosition === 'bottom' ? 'justify-end pb-24' :
+                              'justify-center'
                             }`}>
                             <p
                               className="font-black leading-tight italic tracking-tight drop-shadow-2xl"
@@ -623,6 +640,20 @@ const Home = () => {
                             <div className="flex flex-col gap-3">
                               <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Size ({textSize}px)</label>
                               <div className="h-full flex items-center bg-surface/50 p-2 rounded-2xl border border-primary/10"><input type="range" min="16" max="72" className="w-full accent-primary" value={textSize} onChange={(e) => setTextSize(parseInt(e.target.value))} /></div>
+                            </div>
+                          </div>
+                          
+                          <div className="flex flex-col gap-4 pt-4 border-t  border-white/5">
+                            <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Layout & Sharing</label>
+                            <div className="flex justify-between w-full gap-4">
+                              <div className="flex flex-col gap-2 w-1/2">
+                                <label className="text-[9px] text-gray-500 font-bold uppercase px-1">Card Size</label>
+                                <div className="h-10 flex items-center bg-white/5 px-2 rounded-xl border border-white/10"><input type="range" min="320" max="600" className="w-full accent-primary" value={cardSize} onChange={(e) => setCardSize(parseInt(e.target.value))} /></div>
+                              </div>
+                              <div className="flex flex-col gap-2 mr-10">
+                                <label className="text-[9px] text-gray-500 font-bold uppercase px-1">Outer BG</label>
+                                <div className="h-10 w-10 flex items-center bg-white/5 px-2 rounded-xl border border-white/10"><input type="color" value={outerBgColor} onChange={(e) => setOuterBgColor(e.target.value)} className="w-10 h-6 bg-transparent cursor-pointer" /></div>
+                              </div>
                             </div>
                           </div>
 
