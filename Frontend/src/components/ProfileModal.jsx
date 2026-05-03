@@ -133,8 +133,8 @@ const ProfileModal = ({ isOpen, onClose }) => {
                         onError={() => setImgError(true)}
                       />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-gray-800 to-black flex items-center justify-center text-4xl font-bold text-gray-500">
-                        {name.charAt(0) || '?'}
+                      <div className="w-full h-full bg-gradient-to-br from-gray-800 to-black flex items-center justify-center text-4xl font-bold text-gray-500 leading-none">
+                        <span className="mb-1">{name.charAt(0) || '?'}</span>
                       </div>
                     )}
 

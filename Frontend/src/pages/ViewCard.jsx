@@ -156,8 +156,8 @@ const ViewCard = () => {
         </div>
 
         {/* Sender Profile Overlay */}
-        <div className="absolute bottom-16 left-10 right-10 flex items-center gap-6 p-6 rounded-[2rem] bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl z-50">
-          <div className="relative">
+        <div className="absolute bottom-16 left-10 right-10 flex items-center gap-6 p-6 rounded-[2rem] bg-black/50 backdrop-blur-xl border border-white/10 shadow-2xl z-50">
+          <div className="relative flex-shrink-0">
             {senderProfilePic && !senderImgError ? (
               <img 
                 src={senderProfilePic} 
@@ -167,8 +167,21 @@ const ViewCard = () => {
                 onError={() => setSenderImgError(true)}
               />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xl font-black shadow-2xl border-2 border-primary text-white">
-                {senderName?.charAt(0) || 'U'}
+              <div className="w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-primary to-secondary flex-shrink-0 relative border-2 border-primary shadow-2xl">
+                <svg width="100%" height="100%" viewBox="0 0 64 64" className="absolute inset-0">
+                  <text 
+                    x="50%" 
+                    y="52%" 
+                    dominantBaseline="middle" 
+                    textAnchor="middle" 
+                    fill="white" 
+                    fontSize="32" 
+                    fontWeight="900" 
+                    fontFamily="Inter, sans-serif"
+                  >
+                    {senderName?.charAt(0) || 'U'}
+                  </text>
+                </svg>
               </div>
             )}
 
@@ -176,9 +189,9 @@ const ViewCard = () => {
               <Sparkles size={10} className="text-black" />
             </div>
           </div>
-          <div className="flex-1 overflow-hidden">
-            <p className="text-[10px] font-black text-primary/60 uppercase tracking-[0.2em] mb-1">Personalized By</p>
-            <h3 className="text-2xl font-black text-white truncate py-1 leading-normal">
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] mb-1">Personalized By</p>
+            <h3 className="text-2xl font-black text-white whitespace-nowrap overflow-visible">
               {senderName || 'A Friend'}
             </h3>
           </div>

@@ -71,12 +71,18 @@ const Profile = () => {
 
         <div className="relative group cursor-pointer mb-10" onClick={handleImageClick}>
           <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary/50 group-hover:border-primary transition-all shadow-2xl relative">
-            <img 
-              src={previewUrl || 'https://via.placeholder.com/150'} 
-              alt="Profile" 
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-              onError={(e) => { e.target.src = 'https://via.placeholder.com/150'; }}
-            />
+            {previewUrl && !loading ? (
+              <img 
+                src={previewUrl} 
+                alt="Profile" 
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                onError={() => setPreviewUrl('')}
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-5xl font-black text-white leading-none">
+                <span className="mb-2">{user?.name?.charAt(0) || 'U'}</span>
+              </div>
+            )}
             
             {/* Upload Overlay / Tooltip */}
             <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">

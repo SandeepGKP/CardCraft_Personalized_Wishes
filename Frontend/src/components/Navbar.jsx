@@ -109,8 +109,8 @@ const Navbar = () => {
                       onError={() => setImgError(true)}
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white shadow-2xl font-bold">
-                      {user?.name?.charAt(0) || <UserIcon size={18} />}
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white shadow-2xl font-bold leading-none">
+                      <span className="mb-0.5">{user?.name?.charAt(0) || <UserIcon size={18} />}</span>
                     </div>
                   )}
 
@@ -123,7 +123,7 @@ const Navbar = () => {
                 <div className="hidden sm:block text-left">
                   <p className="text-[8px] text-gray-500 font-black uppercase tracking-[0.2em] mb-0.5 opacity-70">Account</p>
                   <div className="flex items-center gap-1.5">
-                    <p className="font-black text-white text-xs leading-none group-hover:text-primary transition-colors truncate max-w-[80px]">
+                    <p className="font-black text-white text-xs leading-none group-hover:text-primary transition-colors whitespace-nowrap overflow-visible max-w-[80px]">
                       {user?.name?.split(' ')[0] || 'User'}
                     </p>
                     {user?.isPremium && <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full shadow-[0_0_8px_rgba(234,179,8,0.8)]"></span>}

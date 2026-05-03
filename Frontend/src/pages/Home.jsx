@@ -58,6 +58,8 @@ const Home = () => {
   const [generatedLink, setGeneratedLink] = useState('');
   const [isCopied, setIsCopied] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const [profileImgError, setProfileImgError] = useState(false);
 
   // Reset image error when profile picture changes
@@ -238,27 +240,56 @@ const Home = () => {
   const shareCard = async () => {
     const element = document.getElementById('card-preview');
     if (!element) return;
+    setIsSharing(true);
     try {
-      const canvas = await html2canvas(element, { useCORS: true, scale: 2 });
+      // Increased delay for font stabilization
+      await new Promise(r => setTimeout(r, 500));
+      const canvas = await html2canvas(element, { 
+        useCORS: true, 
+        scale: 4, // Even higher scale for professional finish
+        backgroundColor: null,
+        logging: false,
+        onclone: (clonedDoc) => {
+          const clonedElement = clonedDoc.getElementById('card-preview');
+          if (clonedElement) {
+            clonedElement.style.transform = 'none';
+          }
+        }
+      });
       const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
       const file = new File([blob], 'cardcraft-wish.png', { type: 'image/png' });
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({ files: [file], title: 'My Personalized Wish', text: `Check out this wish! ✨\n\nView online: ${generatedLink}` });
       }
-    } catch (err) { console.error(err); }
+    } catch (err) { 
+      console.error(err); 
+    } finally {
+      setIsSharing(false);
+    }
   };
 
   const downloadImage = async () => {
     const element = document.getElementById('card-preview');
     if (!element) return;
+    setIsDownloading(true);
     try {
-      const canvas = await html2canvas(element, { useCORS: true, scale: 2 });
+      await new Promise(r => setTimeout(r, 500));
+      const canvas = await html2canvas(element, { 
+        useCORS: true, 
+        scale: 4,
+        backgroundColor: null,
+        logging: false
+      });
       const url = canvas.toDataURL('image/png');
       const a = document.createElement('a');
       a.href = url;
       a.download = 'cardcraft-wish.png';
       a.click();
-    } catch (err) { console.error(err); }
+    } catch (err) { 
+      console.error(err); 
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const copyToClipboard = async () => {
@@ -378,13 +409,33 @@ const Home = () => {
                         })}
                       </div>
 
-                      <div className="absolute bottom-16 left-10 right-10 flex items-center gap-6 p-6 rounded-[2rem] bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl z-50">
-                        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary">
-                          {user?.profilePicture && !profileImgError ? <img src={user.profilePicture} alt="" className="w-full h-full object-cover" onError={() => setProfileImgError(true)} /> : <div className="w-full h-full bg-primary flex items-center justify-center text-xl font-black text-white">{user?.name?.charAt(0) || 'U'}</div>}
+                      <div className="absolute bottom-16 left-10 right-10 flex items-center p-6 rounded-[2rem] bg-black/60 backdrop-blur-xl border border-white/10 shadow-2xl z-50" style={{ gap: '24px' }}>
+                        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary flex-shrink-0 bg-primary relative">
+                          {user?.profilePicture && !profileImgError ? (
+                            <img src={user.profilePicture} alt="" className="w-full h-full object-cover" onError={() => setProfileImgError(true)} />
+                          ) : (
+                            <svg width="100%" height="100%" viewBox="0 0 64 64" className="absolute inset-0">
+                              <rect width="64" height="64" fill="currentColor" className="text-primary" />
+                              <text 
+                                x="50%" 
+                                y="52%" 
+                                dominantBaseline="middle" 
+                                textAnchor="middle" 
+                                fill="white" 
+                                fontSize="32" 
+                                fontWeight="900" 
+                                fontFamily="Inter, sans-serif"
+                              >
+                                {user?.name?.charAt(0) || 'U'}
+                              </text>
+                            </svg>
+                          )}
                         </div>
-                        <div className="flex-1 overflow-hidden">
-                          <p className="text-[10px] font-black text-primary/60 uppercase tracking-[0.2em] mb-1">Personalized By</p>
-                          <h3 className="text-2xl font-black text-white truncate">{user?.name || 'Your Name'}</h3>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] mb-1" style={{ letterSpacing: '0.2em' }}>Personalized By</p>
+                          <h3 className="text-2xl font-black text-white" style={{ whiteSpace: 'nowrap', overflow: 'visible' }}>
+                            {user?.name || 'Your Name'}
+                          </h3>
                         </div>
                       </div>
                     </div>
@@ -503,11 +554,11 @@ const Home = () => {
                             <button onClick={copyToClipboard} className={`p-2.5 rounded-xl transition-all ${isCopied ? 'bg-green-500 text-white' : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'}`}>{isCopied ? <Check size={18} /> : <Copy size={18} />}</button>
                           </div>
                           <div className="grid grid-cols-2 gap-3">
-                            <button onClick={shareCard} className="bg-primary hover:bg-primary-dark text-black font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2">
-                              <Share2 size={16} /> Native Share
+                            <button onClick={shareCard} disabled={isSharing} className="bg-primary hover:bg-primary-dark text-black font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2 disabled:opacity-50">
+                              {isSharing ? <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div> : <><Share2 size={16} /> Native Share</>}
                             </button>
-                            <button onClick={downloadImage} className="bg-white/10 hover:bg-white/20 text-white font-black py-3 rounded-xl text-xs border border-white/10 flex items-center justify-center gap-2">
-                              <Download size={16} /> Download
+                            <button onClick={downloadImage} disabled={isDownloading} className="bg-white/10 hover:bg-white/20 text-white font-black py-3 rounded-xl text-xs border border-white/10 flex items-center justify-center gap-2 disabled:opacity-50">
+                              {isDownloading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <><Download size={16} /> Download</>}
                             </button>
                           </div>
                         </div>
@@ -549,7 +600,7 @@ const Home = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90 transition-opacity group-hover:opacity-100"></div>
                     <div className="absolute bottom-4 left-4 right-4 flex items-center gap-2 transform transition-transform duration-500 group-hover:translate-x-1">
                       {user?.profilePicture ? <img src={user.profilePicture} alt="" crossOrigin="anonymous" className="w-8 h-8 rounded-full border border-white/50 object-cover" /> : <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold border border-white/50 text-white">{user?.name?.charAt(0) || 'U'}</div>}
-                      <div className="flex-1 overflow-hidden">
+                      <div className="flex-1 min-w-0">
                         <p className="text-[8px] text-primary font-bold tracking-tighter uppercase opacity-70">Best Wishes</p>
                         <p className="text-xs font-bold text-white truncate">{user?.name || 'Guest User'}</p>
                       </div>
