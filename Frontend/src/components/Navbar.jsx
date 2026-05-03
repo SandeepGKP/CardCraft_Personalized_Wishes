@@ -136,7 +136,7 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <Link to="/login" className="btn btn-primary !px-4 sm:!px-6 !py-2 !sm:py-2.5 !rounded-full shadow-xl text-sm sm:text-base">Login</Link>
+            <Link to="/login" className="btn btn-primary hidden !px-4 sm:!px-6 !py-2 !sm:py-2.5 !rounded-full shadow-xl text-sm sm:text-base"></Link>
 
           )}
         </div>

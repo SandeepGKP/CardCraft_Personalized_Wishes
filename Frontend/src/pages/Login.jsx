@@ -64,7 +64,7 @@ const Login = () => {
 
   return (
     <div className="flex justify-center items-center min-h-[calc(100vh-150px)] animate-[fadeIn_0.4s_ease_forwards]">
-      <div className="glass-panel w-full max-w-md p-10 text-center">
+      <div className="glass-panel w-full max-w-md p-6 text-center">
         <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
           Welcome to CardCraft ✨
         </h1>
