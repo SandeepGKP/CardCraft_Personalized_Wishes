@@ -9,24 +9,24 @@
 
 ---
 
-### 📖 Documentation Links
-[![Setup Guide](https://img.shields.io/badge/🛠️_Setup-Guide-blue?style=for-the-badge&logo=read-the-docs&logoColor=white)](#️-setup--installation)
+### Documentation Links
+[![Setup Guide](https://img.shields.io/badge/Setup-Guide-blue?style=for-the-badge&logo=read-the-docs&logoColor=white)](#setup--installation)
 &nbsp;&nbsp;
-[![Technical Approach](https://img.shields.io/badge/📑_Technical-Approach-success?style=for-the-badge&logo=gitbook&logoColor=white)](TECHNICAL_APPROACH.md)
+[![Technical Approach](https://img.shields.io/badge/Technical-Approach-success?style=for-the-badge&logo=gitbook&logoColor=white)](TECHNICAL_APPROACH.md)
 
 ---
 
-## 📌 Table of Contents
-- [🚀 Key Features](#-key-features)
-- [🛠️ Tech Stack](#️-tech-stack)
-- [⚙️ Setup & Installation](#️-setup--installation)
-- [📄 License](#-license)
+## Table of Contents
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Setup & Installation](#setup--installation)
+- [License](#license)
 
 
 ---
 
 
-## 🚀 Key Features
+## Key Features
 
 ### 1. **Pro Design Studio**
 - **Live Templates**: Fetches 13+ categories of high-quality background images live from the Unsplash API.
@@ -46,7 +46,7 @@
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 **Frontend:**
 - React 19 (Vite)
@@ -64,7 +64,7 @@
 
 ---
 
-## ⚙️ Setup & Installation
+## Setup & Installation
 
 ### Prerequisites
 - Node.js (v18+)
@@ -116,7 +116,7 @@ npm run dev
 
 ---
 
-## 📄 License
+## License
 This project is developed as part of a technical assignment. All rights reserved.
 
-**Developed with ❤️ by Sandeep**
+**Developed with by Sandeep**

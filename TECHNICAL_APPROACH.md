@@ -1,18 +1,18 @@
-#  CardCraft: Technical Approach Document 🚀
+# CardCraft: Technical Approach Document
 
 Welcome to the technical deep-dive of **CardCraft**, a high-performance, immersive greeting card studio. This document outlines the architectural decisions and engineering strategies used to build this platform.
 
 ---
 
-## 📑 Table of Contents
-1. [Problem-Solving Approach](#-1-problem-solving-approach-image-overlay-logic)
-2. [Tech Stack](#-2-tech-stack-)
-3. [Challenges & Resolutions](#-3-challenges--resolutions-)
-4. [Future Improvements & Scalability](#-4-future-improvements--scalability-)
+## Table of Contents
+1. [Problem-Solving Approach](#1-problem-solving-approach-image-overlay-logic)
+2. [Tech Stack](#2-tech-stack)
+3. [Challenges & Resolutions](#3-challenges--resolutions)
+4. [Future Improvements & Scalability](#4-future-improvements--scalability)
 
 ---
 
-## 🛠️ 1. Problem-Solving Approach: Image Overlay Logic
+## 1. Problem-Solving Approach: Image Overlay Logic
 
 The core challenge was creating a **Dynamic Canvas** that allows users to personalize templates with text, stickers, and branding, and then "snapshot" that state into a shareable image.
 
@@ -24,29 +24,29 @@ The core challenge was creating a **Dynamic Canvas** that allows users to person
 
 ---
 
-## 💻 2. Tech Stack 🧰
+## 2. Tech Stack
 
 Our stack was chosen for **speed, developer experience, and visual excellence**.
 
 | Category | Technology | Purpose |
 | :--- | :--- | :--- |
-| **Frontend** | ✨ React (Vite) | Component-based UI with lightning-fast HMR. |
-| **Styling** | 🎨 Tailwind CSS | Utility-first styling for complex, responsive layouts. |
-| **Icons** | 💎 Lucide React | Premium, lightweight vector icons. |
-| **Image Capture** | 📸 html2canvas | DOM-to-PNG conversion for sharing/downloads. |
-| **Backend** | ⚙️ Node.js / Express | Robust API orchestration. |
-| **Database** | 🗄️ MongoDB | Flexible schema for storing templates and shared links. |
-| **Integrations** | 🎆 Giphy API | Real-time "Live Sticker" search functionality. |
+| **Frontend** | React (Vite) | Component-based UI with lightning-fast HMR. |
+| **Styling** | Tailwind CSS | Utility-first styling for complex, responsive layouts. |
+| **Icons** | Lucide React | Premium, lightweight vector icons. |
+| **Image Capture** | html2canvas | DOM-to-PNG conversion for sharing/downloads. |
+| **Backend** | Node.js / Express | Robust API orchestration. |
+| **Database** | MongoDB | Flexible schema for storing templates and shared links. |
+| **Integrations** | Giphy API | Real-time "Live Sticker" search functionality. |
 
 ---
 
-## ⚠️ 3. Challenges & Resolutions 💡
+## 3. Challenges & Resolutions
 
-### 🧩 The "Misplaced Initial" Glitch
+### The "Misplaced Initial" Glitch
 - **Hurdle**: During image capture, initial-based avatars (the first letter of a name) would often drift out of position or appear cut off in the final PNG.
 - **Fix**: We transitioned from standard HTML/CSS centering to a **Pure SVG Implementation**. By defining the letter's coordinates within an SVG's fixed coordinate system, we bypassed all browser-specific layout shifts during the snapshot phase.
 
-### ⚡ Real-Time Sticker Search Performance
+### Real-Time Sticker Search Performance
 - **Hurdle**: Fetching high-resolution transparent stickers in real-time could feel sluggish.
 - **Fix**: Implemented a backend proxy to handle Giphy API requests, reducing client-side complexity and allowing us to serve optimized preview thumbnails in a sleek, horizontal-scrolling tray.
 
@@ -68,9 +68,9 @@ Our stack was chosen for **speed, developer experience, and visual excellence**.
 
 ---
 
-## 🔮 4. Future Improvements & Scalability 🚀
+## 4. Future Improvements & Scalability
 
-### 📈 Scalability Considerations:
+### Scalability Considerations:
 - **Server-Side Rendering (SSR)**: Implementing Next.js for better SEO on shared greeting card links.
 - **Canvas Optimization**: Transitioning from DOM-based overlays to a **Fabric.js (Canvas API)** approach for even more complex operations like rotations, filters, and 1000+ decorations.
 - **Distributed Caching**: Using Redis to cache popular sticker search results and template metadata to reduce API latency.
@@ -79,8 +79,7 @@ Our stack was chosen for **speed, developer experience, and visual excellence**.
 
 ---
 
-> [!TIP]
-> **CardCraft** is designed with a "Visual First" philosophy, ensuring that technical complexity never compromises the user's creative flow. ✨
+**CardCraft** is designed with a "Visual First" philosophy, ensuring that technical complexity never compromises the user's creative flow.
 
 ---
-© 2026 CardCraft AI Engineering Team | Built with ❤️ for Creativity
+© 2026 CardCraft Engineering Team | Built with for Creativity
