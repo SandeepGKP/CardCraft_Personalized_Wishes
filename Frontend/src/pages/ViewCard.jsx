@@ -16,6 +16,8 @@ const ViewCard = () => {
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [senderImgError, setSenderImgError] = useState(false);
+
 
   useEffect(() => {
     const fetchCard = async () => {
@@ -156,18 +158,20 @@ const ViewCard = () => {
         {/* Sender Profile Overlay */}
         <div className="absolute bottom-16 left-10 right-10 flex items-center gap-6 p-6 rounded-[2rem] bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl z-50">
           <div className="relative">
-            {senderProfilePic ? (
+            {senderProfilePic && !senderImgError ? (
               <img 
                 src={senderProfilePic} 
                 alt="Sender" 
                 crossOrigin="anonymous" 
                 className="w-16 h-16 rounded-full object-cover border-2 border-primary shadow-2xl" 
+                onError={() => setSenderImgError(true)}
               />
             ) : (
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xl font-black shadow-2xl border-2 border-primary text-white">
                 {senderName?.charAt(0) || 'U'}
               </div>
             )}
+
             <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-primary rounded-full border-2 border-black flex items-center justify-center">
               <Sparkles size={10} className="text-black" />
             </div>

@@ -16,6 +16,8 @@ const ProfileModal = ({ isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [imgError, setImgError] = useState(false);
+
 
   useEffect(() => {
     if (isOpen && user) {
@@ -25,6 +27,8 @@ const ProfileModal = ({ isOpen, onClose }) => {
       setRemovePhoto(false);
       setSuccess(false);
       setError('');
+      setImgError(false);
+
     }
   }, [isOpen, user]);
 
@@ -38,6 +42,8 @@ const ProfileModal = ({ isOpen, onClose }) => {
       setImageFile(file);
       setPreviewUrl(URL.createObjectURL(file));
       setRemovePhoto(false);
+      setImgError(false);
+
     }
   };
 
@@ -119,13 +125,19 @@ const ProfileModal = ({ isOpen, onClose }) => {
                     onClick={handleImageClick}
                     className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary/20 group-hover:border-primary transition-all cursor-pointer relative shadow-2xl ring-4 ring-black"
                   >
-                    {previewUrl ? (
-                      <img src={previewUrl} alt="Avatar" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    {previewUrl && !imgError ? (
+                      <img 
+                        src={previewUrl} 
+                        alt="Avatar" 
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                        onError={() => setImgError(true)}
+                      />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-gray-800 to-black flex items-center justify-center text-4xl font-bold text-gray-500">
                         {name.charAt(0) || '?'}
                       </div>
                     )}
+
                     <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <Camera size={24} className="text-white mb-1" />
                       <span className="text-[10px] font-black text-white uppercase tracking-widest">Change</span>

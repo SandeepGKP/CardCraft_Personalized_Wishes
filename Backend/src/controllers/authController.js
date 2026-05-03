@@ -208,6 +208,7 @@ export const upgradeUser = async (req, res) => {
 
     if (user) {
       user.isPremium = true;
+      user.premiumPlan = req.body.plan || 'lifetime'; // Fallback to lifetime if not provided
       const updatedUser = await user.save();
 
       res.json({
@@ -217,8 +218,10 @@ export const upgradeUser = async (req, res) => {
         profilePicture: updatedUser.profilePicture,
         isGuest: updatedUser.isGuest,
         isPremium: updatedUser.isPremium,
+        premiumPlan: updatedUser.premiumPlan,
         token: generateToken(updatedUser._id),
       });
+
     } else {
       res.status(404).json({ message: 'User not found' });
     }

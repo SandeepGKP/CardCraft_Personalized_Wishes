@@ -13,6 +13,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [showProfile, setShowProfile] = useState(false);
   const [showThemeMenu, setShowThemeMenu] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
 
   const handleLogout = () => {
     dispatch(logout());
@@ -98,22 +100,20 @@ const Navbar = () => {
                 className="flex items-center gap-3 cursor-pointer group p-1 pr-4 rounded-full bg-white/5 border border-white/5 hover:border-primary/30 transition-all active:scale-95 shadow-lg"
               >
                 <div className="relative flex-shrink-0">
-                  {user?.profilePicture ? (
+                  {user?.profilePicture && !imgError ? (
                     <img 
                       src={user.profilePicture} 
                       alt="User Profile" 
                       crossOrigin="anonymous"
                       className="w-10 h-10 rounded-full object-cover border-2 border-primary shadow-2xl transition-all duration-300 group-hover:scale-105" 
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = 'https://via.placeholder.com/150';
-                      }}
+                      onError={() => setImgError(true)}
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white shadow-2xl">
-                      <UserIcon size={18} />
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white shadow-2xl font-bold">
+                      {user?.name?.charAt(0) || <UserIcon size={18} />}
                     </div>
                   )}
+
                   {user?.isPremium && (
                     <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full border-2 border-black flex items-center justify-center text-[8px] shadow-lg animate-bounce z-10">
                       👑

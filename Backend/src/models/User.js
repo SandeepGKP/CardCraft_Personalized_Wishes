@@ -30,6 +30,12 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    premiumPlan: {
+      type: String,
+      enum: ['none', 'monthly', 'yearly', 'lifetime'],
+      default: 'none',
+    },
+
   },
   {
     timestamps: true,
