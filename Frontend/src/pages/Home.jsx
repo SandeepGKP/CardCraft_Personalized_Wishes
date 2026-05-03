@@ -591,7 +591,7 @@ const Home = () => {
                         </div>
                       ) : (
                         <button onClick={handleShare} disabled={isGenerating} className="w-full bg-gradient-to-r from-primary to-secondary text-white font-black py-4 rounded-[1.5rem] transition-all flex items-center justify-center gap-3 shadow-2xl disabled:opacity-50">
-                          {isGenerating ? <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div> : <><Wand2 size={20} /><span className="tracking-wide uppercase text-sm">Generate</span></>}
+                          {isGenerating ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <><Wand2 size={20} /><span className="tracking-wide uppercase text-sm">Generate</span></>}
                         </button>
                       )}
                     </div>
