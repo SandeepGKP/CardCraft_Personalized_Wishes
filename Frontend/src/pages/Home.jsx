@@ -60,6 +60,7 @@ const Home = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
+  const [preparedShareFile, setPreparedShareFile] = useState(null);
   const [profileImgError, setProfileImgError] = useState(false);
 
   // Reset image error when profile picture changes
@@ -238,29 +239,43 @@ const Home = () => {
   };
 
   const shareCard = async () => {
+    // If we already have a prepared file, trigger the share immediately
+    if (preparedShareFile) {
+      try {
+        if (navigator.canShare && navigator.canShare({ files: [preparedShareFile] })) {
+          await navigator.share({ 
+            files: [preparedShareFile], 
+            title: 'My Personalized Wish', 
+            text: `Check out this wish! ✨\n\nView online: ${generatedLink}` 
+          });
+          setPreparedShareFile(null); // Reset after successful share
+          return;
+        }
+      } catch (err) {
+        console.error('Share failed:', err);
+        setPreparedShareFile(null);
+      }
+    }
+
+    // Otherwise, prepare the file
     const element = document.getElementById('card-preview');
     if (!element) return;
     setIsSharing(true);
     try {
-      // Increased delay for font stabilization
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 400));
       const canvas = await html2canvas(element, { 
         useCORS: true, 
-        scale: 4, // Even higher scale for professional finish
+        scale: 3,
         backgroundColor: null,
         logging: false,
         onclone: (clonedDoc) => {
           const clonedElement = clonedDoc.getElementById('card-preview');
-          if (clonedElement) {
-            clonedElement.style.transform = 'none';
-          }
+          if (clonedElement) clonedElement.style.transform = 'none';
         }
       });
       const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
       const file = new File([blob], 'cardcraft-wish.png', { type: 'image/png' });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: 'My Personalized Wish', text: `Check out this wish! ✨\n\nView online: ${generatedLink}` });
-      }
+      setPreparedShareFile(file);
     } catch (err) { 
       console.error(err); 
     } finally {
@@ -554,8 +569,22 @@ const Home = () => {
                             <button onClick={copyToClipboard} className={`p-2.5 rounded-xl transition-all ${isCopied ? 'bg-green-500 text-white' : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'}`}>{isCopied ? <Check size={18} /> : <Copy size={18} />}</button>
                           </div>
                           <div className="grid grid-cols-2 gap-3">
-                            <button onClick={shareCard} disabled={isSharing} className="bg-primary hover:bg-primary-dark text-black font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2 disabled:opacity-50">
-                              {isSharing ? <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div> : <><Share2 size={16} /> Native Share</>}
+                            <button 
+                              onClick={shareCard} 
+                              disabled={isSharing} 
+                              className={`font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2 transition-all ${
+                                preparedShareFile 
+                                  ? 'bg-green-500 text-white animate-pulse shadow-[0_0_20px_rgba(34,197,94,0.4)]' 
+                                  : 'bg-primary text-black'
+                              }`}
+                            >
+                              {isSharing ? (
+                                <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                              ) : preparedShareFile ? (
+                                <><Share2 size={16} /> Click to Send Now</>
+                              ) : (
+                                <><Share2 size={16} /> Native Share</>
+                              )}
                             </button>
                             <button onClick={downloadImage} disabled={isDownloading} className="bg-white/10 hover:bg-white/20 text-white font-black py-3 rounded-xl text-xs border border-white/10 flex items-center justify-center gap-2 disabled:opacity-50">
                               {isDownloading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <><Download size={16} /> Download</>}
