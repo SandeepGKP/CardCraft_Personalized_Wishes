@@ -82,4 +82,4 @@ Our stack was chosen for **speed, developer experience, and visual excellence**.
 **CardCraft** is designed with a "Visual First" philosophy, ensuring that technical complexity never compromises the user's creative flow.
 
 ---
-© 2026 CardCraft Engineering Team | Built with for Creativity
+© 2026 CardCraft Built with ❤️ for Creativity
