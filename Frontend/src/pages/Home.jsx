@@ -304,10 +304,12 @@ const Home = () => {
     setIsDownloading(true);
     try {
       await new Promise(r => setTimeout(r, 500));
-      const canvas = await html2canvas(element, { 
-        useCORS: true, 
-        scale: 4,
+      // Use the capture wrapper to ensure floating elements aren't cut off
+      const canvas = await html2canvas(document.getElementById('capture-area'), {
+        useCORS: true,
+        allowTaint: true,
         backgroundColor: null,
+        scale: 2, // High quality
         logging: false
       });
       const url = canvas.toDataURL('image/png');
@@ -409,8 +411,8 @@ const Home = () => {
 
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 lg:h-[85vh]">
                   {/* Canvas */}
-                  <div className="glass-panel p-4 md:p-8 flex items-center justify-center overflow-visible">
-                    <div id="card-preview" className="relative w-full aspect-[4/5] rounded-[2.5rem] shadow-2xl bg-black ring-1 ring-white/10 overflow-visible">
+                  <div id="capture-area" className="p-10 flex items-center justify-center overflow-visible">
+                    <div id="card-preview" className="relative w-full max-w-[440px] aspect-[4/5] rounded-[2.5rem] shadow-2xl bg-black ring-1 ring-white/10 overflow-visible">
                       
                       {/* Inner body to clip background images but not profile pic */}
                       <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden">
@@ -482,7 +484,7 @@ const Home = () => {
                       </div>
 
                       {/* Floating Profile Picture (Matching Reference) - Outside clip area */}
-                      <div className="absolute top-20 -left-6 z-50 w-32 h-32">
+                      <div className="absolute top-20 lg:-left-6 md:-left-4 -left-2 z-50 lg:w-24 lg:h-24 md:w-20 md:h-20 w-12 h-12">
                         <div className="relative w-full h-full p-1.5 bg-[#22c55e] rounded-full shadow-2xl ring-4 ring-black/20">
                           <div className="w-full h-full rounded-full overflow-hidden bg-white">
                             {user?.profilePicture && !profileImgError ? (

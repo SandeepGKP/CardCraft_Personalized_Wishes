@@ -61,7 +61,7 @@ const ViewCard = () => {
   const { templateImageUrl, message, textStyle, decorations, senderName, senderProfilePic } = card;
 
   return (
-    <div className="flex flex-col items-center py-12 px-10 animate-[fadeIn_0.5s_ease_out] max-w-4xl mx-auto overflow-x-visible">
+    <div className="flex flex-col items-center py-12 px-12 animate-[fadeIn_0.5s_ease_out] max-w-4xl mx-auto overflow-x-visible">
       {/* Brand Tag */}
       <div className="mb-12">
         <Link to="/" className="bg-white/10 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/10 shadow-lg group hover:bg-white/20 transition-all flex items-center gap-3">
@@ -72,7 +72,7 @@ const ViewCard = () => {
       </div>
 
       {/* Card Canvas Container */}
-      <div className="relative w-full max-w-[500px] aspect-[4/5] rounded-[3rem] shadow-[0_32px_80px_rgba(0,0,0,0.8)] bg-black ring-1 ring-white/10 overflow-visible">
+      <div className="relative w-full max-w-[440px] aspect-[4/5] rounded-[3rem] shadow-[0_32px_80px_rgba(0,0,0,0.8)] bg-black ring-1 ring-white/10 overflow-visible">
         
         {/* Actual Card Body (clipped) */}
         <div className="absolute inset-0 rounded-[3rem] overflow-hidden">
@@ -149,7 +149,7 @@ const ViewCard = () => {
         </div>
 
         {/* Floating Profile Picture (Outside clipped area to overlap edge) */}
-        <div className="absolute top-20 -left-6 z-50 w-36 h-36 animate-[fadeIn_0.5s_ease_out]">
+        <div className="absolute top-20 lg:-left-6 md:-left-4 -left-2 z-50 lg:w-24 lg:h-24 md:w-20 md:h-20 w-12 h-12 animate-[fadeIn_0.5s_ease_out]">
           <div className="relative w-full h-full p-1.5 bg-[#22c55e] rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.4)] ring-4 ring-black/20">
             <div className="w-full h-full rounded-full overflow-hidden bg-white">
               {senderProfilePic && !senderImgError ? (
