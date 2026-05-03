@@ -3,19 +3,19 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
 import SubscriptionModal from '../components/SubscriptionModal';
-import { 
-  Sparkles, 
-  Cake, 
-  Heart, 
-  Flame, 
-  HeartHandshake, 
-  Zap, 
-  Plane, 
-  Leaf, 
-  Briefcase, 
-  Palette, 
-  Minus, 
-  Music, 
+import {
+  Sparkles,
+  Cake,
+  Heart,
+  Flame,
+  HeartHandshake,
+  Zap,
+  Plane,
+  Leaf,
+  Briefcase,
+  Palette,
+  Minus,
+  Music,
   Edit3,
   Menu,
   X,
@@ -48,12 +48,12 @@ const Home = () => {
   const [isDragging, setIsDragging] = useState(null);
   const [isResizing, setIsResizing] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   // Internet Sticker States
   const [stickerSearchQuery, setStickerSearchQuery] = useState('');
   const [internetStickers, setInternetStickers] = useState([]);
   const [isSearchingStickers, setIsSearchingStickers] = useState(false);
-  
+
   // Link Generation States
   const [generatedLink, setGeneratedLink] = useState('');
   const [isCopied, setIsCopied] = useState(false);
@@ -76,25 +76,25 @@ const Home = () => {
       url: url || "", // Ensure url is never null
       x: 50,
       y: 50,
-      size: type === 'internet' ? 100 : 40 
+      size: type === 'internet' ? 100 : 40
     };
     setDecorations([...decorations, newDeco]);
   };
 
   const handleDrag = (id, e) => {
     if (isDragging !== id || isResizing) return;
-    
+
     const rect = e.currentTarget.parentElement.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return;
 
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
-    
-    setDecorations(decorations.map(d => 
-      d.id === id ? { 
-        ...d, 
-        x: Math.max(0, Math.min(100, x || 0)), 
-        y: Math.max(0, Math.min(100, y || 0)) 
+
+    setDecorations(decorations.map(d =>
+      d.id === id ? {
+        ...d,
+        x: Math.max(0, Math.min(100, x || 0)),
+        y: Math.max(0, Math.min(100, y || 0))
       } : d
     ));
   };
@@ -107,11 +107,11 @@ const Home = () => {
     const rect = document.getElementById(`deco-${id}`).getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    
+
     const dist = Math.sqrt(Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2));
     const newSize = Math.max(20, Math.min(200, (dist * 2) || 40));
 
-    setDecorations(decorations.map(d => 
+    setDecorations(decorations.map(d =>
       d.id === id ? { ...d, size: newSize } : d
     ));
   };
@@ -260,9 +260,9 @@ const Home = () => {
     try {
       // 1. Generate the image instantly using wide-angle area
       const captureElement = document.getElementById('capture-area');
-      const canvas = await html2canvas(captureElement, { 
-        useCORS: true, 
-        scale: 3, 
+      const canvas = await html2canvas(captureElement, {
+        useCORS: true,
+        scale: 3,
         backgroundColor: '#0a0a0a',
         logging: false,
         x: 0,
@@ -323,8 +323,8 @@ const Home = () => {
       a.href = url;
       a.download = 'cardcraft-wish.png';
       a.click();
-    } catch (err) { 
-      console.error(err); 
+    } catch (err) {
+      console.error(err);
     } finally {
       setIsDownloading(false);
     }
@@ -345,13 +345,13 @@ const Home = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Mobile Hamburger Toggle */}
         <div className="lg:hidden sticky top-24 z-40 flex items-center justify-between glass-panel px-6 py-4 mb-8 bg-black/60 backdrop-blur-xl border-white/5">
-          <button 
+          <button
             onClick={() => setIsSidebarOpen(true)}
             className="p-3 bg-white/5 border border-white/10 rounded-xl text-primary hover:bg-white/10 transition-all"
           >
             <Menu size={24} />
           </button>
-          
+
           <div className="flex items-center gap-3 text-right">
             <div className="text-right">
               <h3 className="text-sm font-black text-maintext leading-none">Studio Filters</h3>
@@ -398,61 +398,137 @@ const Home = () => {
 
         {/* Main Content */}
         <div className="lg:col-span-9 flex flex-col gap-8">
-          
+
           {/* Design Studio Overlay */}
           {selectedTemplate && (
             <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0a0a0a] bg-[radial-gradient(circle_at_50%_-20%,#3d3d3d,transparent)] flex items-start justify-center p-4 md:p-12">
-            <div className="w-full max-w-[1400px] min-h-full flex flex-col animate-[slideUp_0.4s_ease_out]">
-              <div className="relative w-full max-w-7xl mx-auto flex flex-col gap-6 my-auto">
-                
-                <div className="flex justify-between items-center px-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary/20 rounded-2xl flex items-center justify-center text-primary"><Edit3 size={20} /></div>
-                    <div>
-                      <h2 className="text-xl font-black text-white leading-none">Design Studio</h2>
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Personalizing your {selectedTemplate.category} wish</p>
+              <div className="w-full max-w-[1400px] min-h-full flex flex-col animate-[slideUp_0.4s_ease_out]">
+                <div className="relative w-full max-w-7xl mx-auto flex flex-col gap-6 my-auto">
+
+                  <div className="flex justify-between items-center px-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-primary/20 rounded-2xl flex items-center justify-center text-primary"><Edit3 size={20} /></div>
+                      <div>
+                        <h2 className="text-xl font-black text-white leading-none">Design Studio</h2>
+                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Personalizing your {selectedTemplate.category} wish</p>
+                      </div>
                     </div>
+                    <button onClick={() => setSelectedTemplate(null)} className="p-3 bg-white/5 border border-white/10 rounded-2xl text-gray-400 hover:text-white"><X size={24} /></button>
                   </div>
-                  <button onClick={() => setSelectedTemplate(null)} className="p-3 bg-white/5 border border-white/10 rounded-2xl text-gray-400 hover:text-white"><X size={24} /></button>
-                </div>
 
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 lg:h-[85vh]">
-                  {/* Canvas */}
-                  <div id="capture-area" className="p-10 flex items-center justify-center overflow-visible">
-                    <div id="card-preview" className="relative w-full max-w-[440px] aspect-[4/5] rounded-[2.5rem] shadow-2xl bg-black ring-1 ring-white/10 overflow-visible">
-                      
-                      {/* Inner body to clip background images but not profile pic */}
-                      <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden">
-                        {/* Top Header Bar (Matching Reference) */}
-                        <div className="absolute top-0 left-0 right-0 h-24 bg-[#261d18] flex items-center justify-center z-30 shadow-lg">
-                          <h3 className="text-2xl font-black text-white tracking-widest uppercase">
-                            {user?.name || 'Wishes'}
-                          </h3>
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 lg:h-[85vh]">
+                    {/* Canvas */}
+                    <div id="capture-area" className="p-10 flex items-center justify-center overflow-visible">
+                      <div id="card-preview" className="relative w-full max-w-[440px] aspect-[4/5] rounded-[2.5rem] shadow-2xl bg-black ring-1 ring-white/10 overflow-visible">
+
+                        {/* Inner body to clip background images but not profile pic */}
+                        <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden">
+                          {/* Top Header Bar (Matching Reference) */}
+                          <div className="absolute top-0 left-0 right-0 h-24 bg-[#261d18] flex items-center justify-center z-30 shadow-lg">
+                            <h3 className="text-2xl font-black text-white tracking-widest uppercase">
+                              {user?.name || 'Wishes'}
+                            </h3>
+                          </div>
+
+                          {/* Main Image Layer */}
+                          <div className="absolute inset-0 pt-24 pb-0">
+                            <img src={selectedTemplate.imageUrl} alt="" crossOrigin="anonymous" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                          </div>
+
+                          {/* Custom Wish Message Overlay */}
+                          <div className={`absolute inset-0 pt-32 p-12 flex flex-col pointer-events-none z-20 text-center ${textPosition === 'top' ? 'justify-start' :
+                              textPosition === 'bottom' ? 'justify-end pb-24' :
+                                'justify-center'
+                            }`}>
+                            <p
+                              className="font-black leading-tight italic tracking-tight drop-shadow-2xl"
+                              style={{
+                                fontSize: `${textSize}px`,
+                                color: textColor,
+                                fontFamily: fontFamily,
+                                textShadow: '0 4px 12px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.4)'
+                              }}
+                            >
+                              {customMessage || 'Type your message...'}
+                            </p>
+                          </div>
+
+                          {/* Decorations Layer */}
+                          <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
+                            {decorations.map((deco) => {
+                              const config = {
+                                'heart': { icon: Heart, color: '#ef4444' },
+                                'star': { icon: Star, color: '#eab308' },
+                                'gift': { icon: Gift, color: '#ec4899' },
+                                'sparkle': { icon: Sparkles, color: '#06b6d4' },
+                                'party': { icon: PartyPopper, color: '#f97316' }
+                              }[deco.type] || { icon: Sparkles, color: '#6366f1' };
+                              const Icon = config.icon;
+                              return (
+                                <div
+                                  key={deco.id}
+                                  className="absolute"
+                                  style={{
+                                    left: `${deco.x}%`,
+                                    top: `${deco.y}%`,
+                                    width: `${deco.size}px`,
+                                    height: `${deco.size}px`,
+                                    transform: 'translate(-50%, -50%)',
+                                    filter: `drop-shadow(0 4px 12px ${config.color}40)`
+                                  }}
+                                >
+                                  {deco.type === 'internet' ? (
+                                    <img src={deco.url} alt="" className="w-full h-full object-contain drop-shadow-lg" crossOrigin="anonymous" />
+                                  ) : (
+                                    <Icon size={deco.size} style={{ color: '#ffffff', fill: config.color }} className="w-full h-full drop-shadow-md" strokeWidth={2.5} stroke="currentColor" />
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
 
-                        {/* Main Image Layer */}
-                        <div className="absolute inset-0 pt-24 pb-0">
-                          <img src={selectedTemplate.imageUrl} alt="" crossOrigin="anonymous" className="w-full h-full object-cover" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-                        </div>
-                        
-                        {/* Custom Wish Message Overlay */}
-                        <div className={`absolute inset-0 pt-32 p-12 flex flex-col pointer-events-none z-20 text-center ${
-                          textPosition === 'top' ? 'justify-start' : 
-                          textPosition === 'bottom' ? 'justify-end pb-24' : 
-                          'justify-center'
-                        }`}>
-                          <p
-                            className="font-black leading-tight italic tracking-tight drop-shadow-2xl"
-                            style={{
-                              fontSize: `${textSize}px`,
-                              color: textColor,
-                              fontFamily: fontFamily,
-                              textShadow: '0 4px 12px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.4)'
-                            }}
-                          >
-                            {customMessage || 'Type your message...'}
-                          </p>
+                        {/* Floating Profile Picture (Matching Reference) - Outside clip area */}
+                        <div className="absolute top-20 lg:-left-6 md:-left-4 -left-2 z-50 lg:w-24 lg:h-24 md:w-20 md:h-20 w-12 h-12">
+                          <div className="relative w-full h-full p-1.5 bg-[#22c55e] rounded-full shadow-2xl ring-4 ring-black/20">
+                            <div className="w-full h-full rounded-full overflow-hidden bg-white">
+                              {user?.profilePicture && !profileImgError ? (
+                                <img
+                                  src={user.profilePicture}
+                                  alt="Sender"
+                                  crossOrigin="anonymous"
+                                  className="w-full h-full object-cover"
+                                  onError={() => setProfileImgError(true)}
+                                />
+                              ) : (
+                                <svg className="w-full h-full" viewBox="0 0 100 100">
+                                  <defs>
+                                    <linearGradient id="homeAvatarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                      <stop offset="0%" stopColor="#6366f1" />
+                                      <stop offset="100%" stopColor="#a855f7" />
+                                    </linearGradient>
+                                  </defs>
+                                  <rect width="100" height="100" fill="url(#homeAvatarGrad)" />
+                                  <text
+                                    x="50%"
+                                    y="50%"
+                                    dominantBaseline="central"
+                                    textAnchor="middle"
+                                    fill="white"
+                                    fontSize="50"
+                                    fontWeight="900"
+                                    fontFamily="sans-serif"
+                                  >
+                                    {user?.name?.charAt(0).toUpperCase() || 'U'}
+                                  </text>
+                                </svg>
+                              )}
+                            </div>
+                            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full border-2 border-black flex items-center justify-center">
+                              <Sparkles size={10} className="text-black" />
+                            </div>
+                          </div>
                         </div>
 
                         {/* Decorations Layer */}
@@ -482,236 +558,176 @@ const Home = () => {
                                 {deco.type === 'internet' ? (
                                   <img src={deco.url} alt="" className="w-full h-full object-contain drop-shadow-lg" crossOrigin="anonymous" />
                                 ) : (
-                                  <Icon size={deco.size} style={{ color: '#ffffff', fill: config.color }} className="w-full h-full drop-shadow-md" strokeWidth={2.5} stroke="currentColor" />
+                                  <Icon size={deco.size} style={{ color: '#ffffff', fill: config.color }} className="w-full h-full drop-shadow-md" strokeWidth={2.5} />
                                 )}
                               </div>
                             );
                           })}
                         </div>
-                      </div>
 
-                      {/* Floating Profile Picture (Matching Reference) - Outside clip area */}
-                      <div className="absolute top-20 lg:-left-6 md:-left-4 -left-2 z-50 lg:w-24 lg:h-24 md:w-20 md:h-20 w-12 h-12">
-                        <div className="relative w-full h-full p-1.5 bg-[#22c55e] rounded-full shadow-2xl ring-4 ring-black/20">
-                          <div className="w-full h-full rounded-full overflow-hidden bg-white">
-                            {user?.profilePicture && !profileImgError ? (
-                              <img
-                                src={user.profilePicture}
-                                alt="Sender"
-                                crossOrigin="anonymous"
-                                className="w-full h-full object-cover"
-                                onError={() => setProfileImgError(true)}
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/80 to-secondary/80 text-white font-black text-3xl">
-                                {user?.name?.charAt(0) || 'U'}
+                        <div className="absolute inset-0 z-40 pointer-events-auto overflow-hidden"
+                          onMouseMove={(e) => { if (isDragging) handleDrag(isDragging, e); if (isResizing) handleResize(isResizing, e); }}
+                          onMouseUp={() => { setIsDragging(null); setIsResizing(null); }}
+                          onMouseLeave={() => { setIsDragging(null); setIsResizing(null); }}
+                        >
+                          {decorations.map((deco) => {
+                            const config = { 'heart': { icon: Heart, color: '#ef4444' }, 'star': { icon: Star, color: '#eab308' }, 'gift': { icon: Gift, color: '#ec4899' }, 'sparkle': { icon: Sparkles, color: '#06b6d4' }, 'party': { icon: PartyPopper, color: '#f97316' } }[deco.type] || { icon: Sparkles, color: '#6366f1' };
+                            const Icon = config.icon;
+                            return (
+                              <div key={deco.id} id={`deco-${deco.id}`} className="absolute cursor-move group select-none" style={{ left: `${deco.x}%`, top: `${deco.y}%`, width: `${deco.size}px`, height: `${deco.size}px`, transform: 'translate(-50%, -50%)' }} onMouseDown={(e) => { e.stopPropagation(); setIsDragging(deco.id); }}>
+                                {deco.type === 'internet' ? <img src={deco.url} className="w-full h-full object-contain" /> : <Icon size={deco.size} style={{ fill: config.color, color: '#fff' }} />}
+                                <button className="absolute -top-3 -right-3 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setDecorations(decorations.filter(d => d.id !== deco.id)); }}><X size={12} /></button>
+                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-white rounded-full border-2 border-primary cursor-nwse-resize opacity-0 group-hover:opacity-100" onMouseDown={(e) => { e.stopPropagation(); setIsResizing(deco.id); }}></div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                      </div>
+                    </div>
+
+                    {/* Controls */}
+                    <div className="glass-panel p-8 flex flex-col h-full overflow-hidden">
+                      <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                        <div className="flex flex-col gap-8 pb-10">
+                          <div className="flex flex-col gap-3">
+                            <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Your Wish</label>
+                            <textarea className="w-full bg-white/5 border border-white/10 p-5 rounded-[1.5rem] text-white" rows="3" value={customMessage} onChange={(e) => setCustomMessage(e.target.value)}></textarea>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-6">
+                            <div className="flex flex-col gap-3">
+                              <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Typography</label>
+                              <div className="relative group">
+                                <select
+                                  className="w-full bg-white/5 border border-white/10 p-3.5 pr-10 rounded-2xl text-sm text-white font-bold cursor-pointer focus:border-primary/50 transition-all outline-none appearance-none"
+                                  value={fontFamily}
+                                  onChange={(e) => setFontFamily(e.target.value)}
+                                >
+                                  <option value="'Inter', sans-serif" className="bg-surface text-white">Modern Sans</option>
+                                  <option value="'Playfair Display', serif" className="bg-surface text-white">Elegant Serif</option>
+                                  <option value="'Montserrat', sans-serif" className="bg-surface text-white">Bold Impact</option>
+                                  <option value="'Pacifico', cursive" className="bg-surface text-white">Artistic Script</option>
+                                  <option value="'Dancing Script', cursive" className="bg-surface text-white">Handwriting</option>
+                                  <option value="'Orbitron', sans-serif" className="bg-surface text-white">Futuristic</option>
+                                  <option value="'Lobster', cursive" className="bg-surface text-white">Retro Bold</option>
+                                  <option value="'Pinyon Script', cursive" className="bg-surface text-white">Royal Script</option>
+                                </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 group-focus-within:text-primary transition-colors">
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex flex-col gap-3">
+                              <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Size ({textSize}px)</label>
+                              <div className="h-full flex items-center bg-surface/50 p-2 rounded-2xl border border-primary/10"><input type="range" min="16" max="72" className="w-full accent-primary" value={textSize} onChange={(e) => setTextSize(parseInt(e.target.value))} /></div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-6">
+                            <div className="flex flex-col gap-3">
+                              <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Color</label>
+                              <div className="flex items-center gap-3 bg-surface/50 p-2 rounded-2xl border border-primary/10"><input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-10 h-10 rounded-xl bg-transparent border-none cursor-pointer p-0" /></div>
+                            </div>
+                            <div className="flex flex-col gap-3">
+                              <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Position</label>
+                              <div className="flex bg-surface/50 p-1 rounded-2xl border border-primary/10 h-14">
+                                {['top', 'center', 'bottom'].map(pos => <button key={pos} onClick={() => setTextPosition(pos)} className={`flex-1 flex items-center justify-center rounded-xl transition-all ${textPosition === pos ? 'bg-primary text-black' : 'text-gray-500 hover:text-white'}`}><div className={`w-4 h-0.5 bg-current ${pos === 'top' ? 'mb-2' : pos === 'bottom' ? 'mt-2' : ''}`}></div></button>)}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-4">
+                            <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Stickers</label>
+                            <div className="bg-surface/30 p-2 rounded-3xl border border-primary/10">
+                              <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
+                                {[
+                                  { type: 'heart', icon: Heart, label: 'Love', color: 'text-red-500' },
+                                  { type: 'star', icon: Star, label: 'Star', color: 'text-yellow-500' },
+                                  { type: 'gift', icon: Gift, label: 'Gift', color: 'text-pink-500' },
+                                  { type: 'sparkle', icon: Sparkles, label: 'Magic', color: 'text-cyan-500' },
+                                  { type: 'party', icon: PartyPopper, label: 'Party', color: 'text-orange-500' }
+                                ].map((deco) => (
+                                  <button key={deco.type} onClick={() => addDecoration(deco.type)} className="flex flex-col items-center gap-2 p-3 min-w-[70px] rounded-2xl bg-white/5 hover:bg-white/10 transition-all border border-white/5">
+                                    <deco.icon size={20} className={`${deco.color}`} />
+                                    <span className="text-[8px] font-black text-gray-500 uppercase tracking-widest">{deco.label}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <div className="relative flex-1">
+                                <input
+                                  type="text" placeholder="Search live stickers..."
+                                  className="w-full bg-white/5 border border-white/10 pl-10 pr-4 py-3 rounded-xl text-xs text-white focus:border-primary/50 transition-all outline-none"
+                                  value={stickerSearchQuery}
+                                  onChange={(e) => setStickerSearchQuery(e.target.value)}
+                                  onKeyDown={(e) => e.key === 'Enter' && searchInternetStickers()}
+                                />
+                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                                  <Search size={14} />
+                                </div>
+                              </div>
+                              <button onClick={searchInternetStickers} disabled={isSearchingStickers} className="bg-primary text-black px-4 rounded-xl active:scale-95 disabled:opacity-50 flex items-center justify-center">
+                                {isSearchingStickers ? <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div> : <Search size={18} />}
+                              </button>
+                            </div>
+                            {internetStickers.length > 0 && (
+                              <div className="flex gap-3 overflow-x-auto pb-3 custom-scrollbar">
+                                {internetStickers.map((sticker, idx) => (
+                                  <button
+                                    key={idx}
+                                    onClick={() => addDecoration('internet', sticker.previewUrl)}
+                                    className="w-14 h-14 flex-shrink-0 rounded-xl overflow-hidden hover:ring-2 ring-primary transition-all active:scale-90 bg-black/40 border border-white/5"
+                                  >
+                                    <img src={sticker.previewUrl} alt="" className="w-full h-full object-contain" />
+                                  </button>
+                                ))}
                               </div>
                             )}
                           </div>
-                          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full border-2 border-black flex items-center justify-center">
-                            <Sparkles size={10} className="text-black" />
-                          </div>
                         </div>
                       </div>
 
-                      {/* Decorations Layer */}
-                      <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
-                        {decorations.map((deco) => {
-                          const config = {
-                            'heart': { icon: Heart, color: '#ef4444' },
-                            'star': { icon: Star, color: '#eab308' },
-                            'gift': { icon: Gift, color: '#ec4899' },
-                            'sparkle': { icon: Sparkles, color: '#06b6d4' },
-                            'party': { icon: PartyPopper, color: '#f97316' }
-                          }[deco.type] || { icon: Sparkles, color: '#6366f1' };
-                          const Icon = config.icon;
-                          return (
-                            <div
-                              key={deco.id}
-                              className="absolute"
-                              style={{
-                                left: `${deco.x}%`,
-                                top: `${deco.y}%`,
-                                width: `${deco.size}px`,
-                                height: `${deco.size}px`,
-                                transform: 'translate(-50%, -50%)',
-                                filter: `drop-shadow(0 4px 12px ${config.color}40)`
-                              }}
-                            >
-                              {deco.type === 'internet' ? (
-                                <img src={deco.url} alt="" className="w-full h-full object-contain drop-shadow-lg" crossOrigin="anonymous" />
-                              ) : (
-                                <Icon size={deco.size} style={{ color: '#ffffff', fill: config.color }} className="w-full h-full drop-shadow-md" strokeWidth={2.5} />
-                              )}
+                      <div className="mt-8 pt-6 border-t border-white/10 flex flex-col gap-4">
+                        {generatedLink ? (
+                          <div className="flex flex-col gap-3 animate-[fadeIn_0.3s_ease_out]">
+                            <div className="flex gap-2">
+                              <div className="flex-1 bg-surface/50 border border-primary/10 px-4 py-2.5 rounded-xl text-xs text-gray-300 truncate font-mono">{generatedLink}</div>
+                              <button onClick={copyToClipboard} className={`p-2.5 rounded-xl transition-all ${isCopied ? 'bg-green-500 text-white' : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'}`}>{isCopied ? <Check size={18} /> : <Copy size={18} />}</button>
                             </div>
-                          );
-                        })}
-                      </div>
-
-                      <div className="absolute inset-0 z-40 pointer-events-auto overflow-hidden"
-                        onMouseMove={(e) => { if (isDragging) handleDrag(isDragging, e); if (isResizing) handleResize(isResizing, e); }}
-                        onMouseUp={() => { setIsDragging(null); setIsResizing(null); }}
-                        onMouseLeave={() => { setIsDragging(null); setIsResizing(null); }}
-                      >
-                        {decorations.map((deco) => {
-                          const config = { 'heart': { icon: Heart, color: '#ef4444' }, 'star': { icon: Star, color: '#eab308' }, 'gift': { icon: Gift, color: '#ec4899' }, 'sparkle': { icon: Sparkles, color: '#06b6d4' }, 'party': { icon: PartyPopper, color: '#f97316' } }[deco.type] || { icon: Sparkles, color: '#6366f1' };
-                          const Icon = config.icon;
-                          return (
-                            <div key={deco.id} id={`deco-${deco.id}`} className="absolute cursor-move group select-none" style={{ left: `${deco.x}%`, top: `${deco.y}%`, width: `${deco.size}px`, height: `${deco.size}px`, transform: 'translate(-50%, -50%)' }} onMouseDown={(e) => { e.stopPropagation(); setIsDragging(deco.id); }}>
-                              {deco.type === 'internet' ? <img src={deco.url} className="w-full h-full object-contain" /> : <Icon size={deco.size} style={{ fill: config.color, color: '#fff' }} />}
-                              <button className="absolute -top-3 -right-3 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setDecorations(decorations.filter(d => d.id !== deco.id)); }}><X size={12} /></button>
-                              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-white rounded-full border-2 border-primary cursor-nwse-resize opacity-0 group-hover:opacity-100" onMouseDown={(e) => { e.stopPropagation(); setIsResizing(deco.id); }}></div>
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                    </div>
-                  </div>
-
-                  {/* Controls */}
-                  <div className="glass-panel p-8 flex flex-col h-full overflow-hidden">
-                    <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-                      <div className="flex flex-col gap-8 pb-10">
-                        <div className="flex flex-col gap-3">
-                          <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Your Wish</label>
-                          <textarea className="w-full bg-white/5 border border-white/10 p-5 rounded-[1.5rem] text-white" rows="3" value={customMessage} onChange={(e) => setCustomMessage(e.target.value)}></textarea>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-6">
-                          <div className="flex flex-col gap-3">
-                            <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Typography</label>
-                            <div className="relative group">
-                              <select 
-                                className="w-full bg-white/5 border border-white/10 p-3.5 pr-10 rounded-2xl text-sm text-white font-bold cursor-pointer focus:border-primary/50 transition-all outline-none appearance-none" 
-                                value={fontFamily} 
-                                onChange={(e) => setFontFamily(e.target.value)}
+                            <div className="grid grid-cols-2 gap-3">
+                              <button
+                                onClick={shareCard}
+                                disabled={isNativeSharing}
+                                className={`bg-primary hover:bg-primary-dark text-black font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2 transition-all ${(isNativeSharing) ? 'opacity-50 cursor-wait' : ''
+                                  }`}
                               >
-                                <option value="'Inter', sans-serif" className="bg-surface text-white">Modern Sans</option>
-                                <option value="'Playfair Display', serif" className="bg-surface text-white">Elegant Serif</option>
-                                <option value="'Montserrat', sans-serif" className="bg-surface text-white">Bold Impact</option>
-                                <option value="'Pacifico', cursive" className="bg-surface text-white">Artistic Script</option>
-                                <option value="'Dancing Script', cursive" className="bg-surface text-white">Handwriting</option>
-                                <option value="'Orbitron', sans-serif" className="bg-surface text-white">Futuristic</option>
-                                <option value="'Lobster', cursive" className="bg-surface text-white">Retro Bold</option>
-                                <option value="'Pinyon Script', cursive" className="bg-surface text-white">Royal Script</option>
-                              </select>
-                              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 group-focus-within:text-primary transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                </svg>
-                              </div>
+                                {(isNativeSharing) ? (
+                                  <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                                ) : (
+                                  <><Share2 size={16} /> Native Share</>
+                                )}
+                              </button>
+                              <button onClick={downloadImage} disabled={isDownloading} className="bg-white/10 hover:bg-white/20 text-white font-black py-3 rounded-xl text-xs border border-white/10 flex items-center justify-center gap-2 disabled:opacity-50">
+                                {isDownloading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <><Download size={16} /> Download</>}
+                              </button>
                             </div>
                           </div>
-                          <div className="flex flex-col gap-3">
-                            <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Size ({textSize}px)</label>
-                            <div className="h-full flex items-center bg-surface/50 p-2 rounded-2xl border border-primary/10"><input type="range" min="16" max="72" className="w-full accent-primary" value={textSize} onChange={(e) => setTextSize(parseInt(e.target.value))} /></div>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-6">
-                          <div className="flex flex-col gap-3">
-                            <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Color</label>
-                            <div className="flex items-center gap-3 bg-surface/50 p-2 rounded-2xl border border-primary/10"><input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-10 h-10 rounded-xl bg-transparent border-none cursor-pointer p-0" /></div>
-                          </div>
-                          <div className="flex flex-col gap-3">
-                            <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Position</label>
-                            <div className="flex bg-surface/50 p-1 rounded-2xl border border-primary/10 h-14">
-                              {['top', 'center', 'bottom'].map(pos => <button key={pos} onClick={() => setTextPosition(pos)} className={`flex-1 flex items-center justify-center rounded-xl transition-all ${textPosition === pos ? 'bg-primary text-black' : 'text-gray-500 hover:text-white'}`}><div className={`w-4 h-0.5 bg-current ${pos === 'top' ? 'mb-2' : pos === 'bottom' ? 'mt-2' : ''}`}></div></button>)}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex flex-col gap-4">
-                          <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Stickers</label>
-                          <div className="bg-surface/30 p-2 rounded-3xl border border-primary/10">
-                            <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
-                              {[
-                                { type: 'heart', icon: Heart, label: 'Love', color: 'text-red-500' },
-                                { type: 'star', icon: Star, label: 'Star', color: 'text-yellow-500' },
-                                { type: 'gift', icon: Gift, label: 'Gift', color: 'text-pink-500' },
-                                { type: 'sparkle', icon: Sparkles, label: 'Magic', color: 'text-cyan-500' },
-                                { type: 'party', icon: PartyPopper, label: 'Party', color: 'text-orange-500' }
-                              ].map((deco) => (
-                                <button key={deco.type} onClick={() => addDecoration(deco.type)} className="flex flex-col items-center gap-2 p-3 min-w-[70px] rounded-2xl bg-white/5 hover:bg-white/10 transition-all border border-white/5">
-                                  <deco.icon size={20} className={`${deco.color}`} />
-                                  <span className="text-[8px] font-black text-gray-500 uppercase tracking-widest">{deco.label}</span>
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                          <div className="flex gap-2">
-                            <div className="relative flex-1">
-                              <input 
-                                type="text" placeholder="Search live stickers..." 
-                                className="w-full bg-white/5 border border-white/10 pl-10 pr-4 py-3 rounded-xl text-xs text-white focus:border-primary/50 transition-all outline-none" 
-                                value={stickerSearchQuery} 
-                                onChange={(e) => setStickerSearchQuery(e.target.value)} 
-                                onKeyDown={(e) => e.key === 'Enter' && searchInternetStickers()} 
-                              />
-                              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                                <Search size={14} />
-                              </div>
-                            </div>
-                            <button onClick={searchInternetStickers} disabled={isSearchingStickers} className="bg-primary text-black px-4 rounded-xl active:scale-95 disabled:opacity-50 flex items-center justify-center">
-                              {isSearchingStickers ? <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div> : <Search size={18} />}
-                            </button>
-                          </div>
-                          {internetStickers.length > 0 && (
-                            <div className="flex gap-3 overflow-x-auto pb-3 custom-scrollbar">
-                              {internetStickers.map((sticker, idx) => (
-                                <button 
-                                  key={idx} 
-                                  onClick={() => addDecoration('internet', sticker.previewUrl)} 
-                                  className="w-14 h-14 flex-shrink-0 rounded-xl overflow-hidden hover:ring-2 ring-primary transition-all active:scale-90 bg-black/40 border border-white/5"
-                                >
-                                  <img src={sticker.previewUrl} alt="" className="w-full h-full object-contain" />
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                        </div>
+                        ) : (
+                          <button onClick={handleShare} disabled={isGenerating} className="w-full bg-gradient-to-r from-primary to-secondary text-white font-black py-4 rounded-[1.5rem] transition-all flex items-center justify-center gap-3 shadow-2xl disabled:opacity-50">
+                            {isGenerating ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <><Wand2 size={20} /><span className="tracking-wide uppercase text-sm">Generate</span></>}
+                          </button>
+                        )}
                       </div>
-                    </div>
-
-                    <div className="mt-8 pt-6 border-t border-white/10 flex flex-col gap-4">
-                      {generatedLink ? (
-                        <div className="flex flex-col gap-3 animate-[fadeIn_0.3s_ease_out]">
-                          <div className="flex gap-2">
-                            <div className="flex-1 bg-surface/50 border border-primary/10 px-4 py-2.5 rounded-xl text-xs text-gray-300 truncate font-mono">{generatedLink}</div>
-                            <button onClick={copyToClipboard} className={`p-2.5 rounded-xl transition-all ${isCopied ? 'bg-green-500 text-white' : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'}`}>{isCopied ? <Check size={18} /> : <Copy size={18} />}</button>
-                          </div>
-                          <div className="grid grid-cols-2 gap-3">
-                            <button 
-                              onClick={shareCard} 
-                              disabled={isNativeSharing}
-                              className={`bg-primary hover:bg-primary-dark text-black font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2 transition-all ${
-                                (isNativeSharing) ? 'opacity-50 cursor-wait' : ''
-                              }`}
-                            >
-                              {(isNativeSharing) ? (
-                                <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                              ) : (
-                                <><Share2 size={16} /> Native Share</>
-                              )}
-                            </button>
-                            <button onClick={downloadImage} disabled={isDownloading} className="bg-white/10 hover:bg-white/20 text-white font-black py-3 rounded-xl text-xs border border-white/10 flex items-center justify-center gap-2 disabled:opacity-50">
-                              {isDownloading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <><Download size={16} /> Download</>}
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <button onClick={handleShare} disabled={isGenerating} className="w-full bg-gradient-to-r from-primary to-secondary text-white font-black py-4 rounded-[1.5rem] transition-all flex items-center justify-center gap-3 shadow-2xl disabled:opacity-50">
-                          {isGenerating ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <><Wand2 size={20} /><span className="tracking-wide uppercase text-sm">Generate</span></>}
-                        </button>
-                      )}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
           {/* Template Grid */}
           <div>
@@ -726,7 +742,7 @@ const Home = () => {
                 <button type="submit" className="hidden"></button>
               </form>
             </div>
-            
+
             {loading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
                 {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="aspect-[4/5] bg-white/5 animate-pulse rounded-[2.5rem] border border-white/5"></div>)}

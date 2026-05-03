@@ -73,7 +73,7 @@ const ViewCard = () => {
 
       {/* Card Canvas Container */}
       <div className="relative w-full max-w-[440px] aspect-[4/5] rounded-[3rem] shadow-[0_32px_80px_rgba(0,0,0,0.8)] bg-black ring-1 ring-white/10 overflow-visible">
-        
+
         {/* Actual Card Body (clipped) */}
         <div className="absolute inset-0 rounded-[3rem] overflow-hidden">
           {/* Top Header Bar */}
@@ -95,11 +95,10 @@ const ViewCard = () => {
           </div>
 
           {/* Custom Wish Message Overlay */}
-          <div className={`absolute inset-0 pt-32 p-12 flex flex-col pointer-events-none z-20 text-center ${
-            textStyle.position === 'top' ? 'justify-start' : 
-            textStyle.position === 'bottom' ? 'justify-end pb-24' : 
-            'justify-center'
-          }`}>
+          <div className={`absolute inset-0 pt-32 p-12 flex flex-col pointer-events-none z-20 text-center ${textStyle.position === 'top' ? 'justify-start' :
+              textStyle.position === 'bottom' ? 'justify-end pb-24' :
+                'justify-center'
+            }`}>
             <p
               className="font-black leading-tight italic tracking-tight drop-shadow-2xl"
               style={{
@@ -161,9 +160,27 @@ const ViewCard = () => {
                   onError={() => setSenderImgError(true)}
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/80 to-secondary/80 text-white font-black text-4xl">
-                  {senderName?.charAt(0) || 'U'}
-                </div>
+                <svg className="w-full h-full" viewBox="0 0 100 100">
+                  <defs>
+                    <linearGradient id="viewAvatarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#6366f1" />
+                      <stop offset="100%" stopColor="#a855f7" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="100" height="100" fill="url(#viewAvatarGrad)" />
+                  <text
+                    x="50%"
+                    y="50%"
+                    dominantBaseline="central"
+                    textAnchor="middle"
+                    fill="white"
+                    fontSize="50"
+                    fontWeight="900"
+                    fontFamily="sans-serif"
+                  >
+                    {senderName?.charAt(0).toUpperCase() || 'U'}
+                  </text>
+                </svg>
               )}
             </div>
             <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-primary rounded-full border-4 border-[#261d18] flex items-center justify-center shadow-lg">
