@@ -60,6 +60,7 @@ const Home = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
+  const [isNativeSharing, setIsNativeSharing] = useState(false);
   const [preparedShareFile, setPreparedShareFile] = useState(null);
   const [profileImgError, setProfileImgError] = useState(false);
 
@@ -239,47 +240,29 @@ const Home = () => {
   };
 
   const shareCard = async () => {
-    // If we already have a prepared file, trigger the share immediately
-    if (preparedShareFile) {
-      try {
-        if (navigator.canShare && navigator.canShare({ files: [preparedShareFile] })) {
-          await navigator.share({ 
-            files: [preparedShareFile], 
-            title: 'My Personalized Wish', 
-            text: `Check out this wish! ✨\n\nView online: ${generatedLink}` 
-          });
-          setPreparedShareFile(null); // Reset after successful share
-          return;
-        }
-      } catch (err) {
-        console.error('Share failed:', err);
-        setPreparedShareFile(null);
-      }
-    }
+    if (isNativeSharing) return;
+    setIsNativeSharing(true);
+    
+    const shareData = {
+      title: 'My Personalized Wish ✨',
+      text: `I created a special wish for you! Check it out here:\n${generatedLink}`,
+      url: generatedLink
+    };
 
-    // Otherwise, prepare the file
-    const element = document.getElementById('card-preview');
-    if (!element) return;
-    setIsSharing(true);
     try {
-      await new Promise(r => setTimeout(r, 400));
-      const canvas = await html2canvas(element, { 
-        useCORS: true, 
-        scale: 3,
-        backgroundColor: null,
-        logging: false,
-        onclone: (clonedDoc) => {
-          const clonedElement = clonedDoc.getElementById('card-preview');
-          if (clonedElement) clonedElement.style.transform = 'none';
-        }
-      });
-      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-      const file = new File([blob], 'cardcraft-wish.png', { type: 'image/png' });
-      setPreparedShareFile(file);
-    } catch (err) { 
-      console.error(err); 
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback for Desktop: Open WhatsApp directly
+        window.open(`https://wa.me/?text=${encodeURIComponent(shareData.text)}`, '_blank');
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        window.open(`https://wa.me/?text=${encodeURIComponent(shareData.text)}`, '_blank');
+      }
     } finally {
-      setIsSharing(false);
+      setIsNativeSharing(false);
+      try { navigator.clipboard.writeText(generatedLink); } catch (e) {}
     }
   };
 
@@ -571,17 +554,13 @@ const Home = () => {
                           <div className="grid grid-cols-2 gap-3">
                             <button 
                               onClick={shareCard} 
-                              disabled={isSharing} 
-                              className={`font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2 transition-all ${
-                                preparedShareFile 
-                                  ? 'bg-green-500 text-white animate-pulse shadow-[0_0_20px_rgba(34,197,94,0.4)]' 
-                                  : 'bg-primary text-black'
+                              disabled={isNativeSharing}
+                              className={`bg-primary hover:bg-primary-dark text-black font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2 transition-all ${
+                                (isNativeSharing) ? 'opacity-50 cursor-wait' : ''
                               }`}
                             >
-                              {isSharing ? (
+                              {(isNativeSharing) ? (
                                 <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                              ) : preparedShareFile ? (
-                                <><Share2 size={16} /> Click to Send Now</>
                               ) : (
                                 <><Share2 size={16} /> Native Share</>
                               )}
