@@ -9,6 +9,13 @@
 
 ---
 
+### 📖 Documentation Links
+[![Setup Guide](https://img.shields.io/badge/🛠️_Setup-Guide-blue?style=for-the-badge&logo=read-the-docs&logoColor=white)](#️-setup--installation)
+&nbsp;&nbsp;
+[![Technical Approach](https://img.shields.io/badge/📑_Technical-Approach-success?style=for-the-badge&logo=gitbook&logoColor=white)](TECHNICAL_APPROACH.md)
+
+---
+
 ## 📌 Table of Contents
 - [🚀 Key Features](#-key-features)
 - [🛠️ Tech Stack](#️-tech-stack)
