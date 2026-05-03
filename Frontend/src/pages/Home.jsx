@@ -401,8 +401,8 @@ const Home = () => {
           
           {/* Design Studio Overlay */}
           {selectedTemplate && (
-            <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0a0a0a] bg-[radial-gradient(circle_at_50%_-20%,#3d3d3d,transparent)] flex items-center justify-center p-4">
-            <div className="w-full max-w-[1400px] animate-[slideUp_0.4s_ease_out]">
+            <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0a0a0a] bg-[radial-gradient(circle_at_50%_-20%,#3d3d3d,transparent)] flex items-start justify-center p-4 md:p-12">
+            <div className="w-full max-w-[1400px] min-h-full flex flex-col animate-[slideUp_0.4s_ease_out]">
               <div className="relative w-full max-w-7xl mx-auto flex flex-col gap-6 my-auto">
                 
                 <div className="flex justify-between items-center px-4">
