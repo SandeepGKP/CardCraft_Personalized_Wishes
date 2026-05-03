@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateUser } from './store/authSlice';
 import axios from 'axios';
@@ -15,10 +15,12 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
-function App() {
+const AppContent = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const { user, token } = useSelector((state) => state.auth);
   const { currentTheme } = useSelector((state) => state.theme);
+  const hideNavbar = location.pathname.startsWith('/card/');
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', currentTheme);
@@ -29,7 +31,6 @@ function App() {
       if (token) {
         try {
           const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/auth/profile`, {
-
             headers: { Authorization: `Bearer ${token}` }
           });
           dispatch(updateUser(data));
@@ -42,25 +43,30 @@ function App() {
   }, [token, dispatch]);
 
   return (
-    <Router>
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12">
-        <Navbar />
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          } />
-          <Route path="/profile" element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          } />
-          <Route path="/card/:id" element={<ViewCard />} />
-        </Routes>
+    <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12">
+      {!hideNavbar && <Navbar />}
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } />
+        <Route path="/card/:id" element={<ViewCard />} />
+      </Routes>
+    </div>
+  );
+};
 
-      </div>
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }

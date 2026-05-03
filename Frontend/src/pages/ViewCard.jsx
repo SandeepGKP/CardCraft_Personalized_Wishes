@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { 
-  Heart, 
-  Star, 
-  Gift, 
-  Sparkles, 
+import {
+  Heart,
+  Star,
+  Gift,
+  Sparkles,
   PartyPopper,
   Wand2,
   Home as HomeIcon
@@ -63,7 +63,7 @@ const ViewCard = () => {
 
   return (
     <div className="flex flex-col items-center py-12 animate-[fadeIn_0.5s_ease_out] max-w-4xl mx-auto">
-      
+
       {/* Brand Tag */}
       <div className="mb-12">
         <Link to="/" className="bg-white/10 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/10 shadow-lg group hover:bg-white/20 transition-all flex items-center gap-3">
@@ -75,27 +75,26 @@ const ViewCard = () => {
 
       {/* Card Canvas */}
       <div className="relative w-full max-w-[500px] aspect-[4/5] rounded-[3rem] overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.8)] bg-black ring-1 ring-white/10 animate-[scaleUp_0.6s_ease_out]">
-        <img 
-          src={templateImageUrl} 
-          alt="Card Background" 
+        <img
+          src={templateImageUrl}
+          alt="Card Background"
           crossOrigin="anonymous"
           className="absolute inset-0 w-full h-full object-cover"
         />
 
-        
+
         {/* Premium Overlays */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/90"></div>
-        
+
         {/* Custom Wish Message Overlay */}
-        <div className={`absolute inset-0 p-12 flex flex-col pointer-events-none ${
-          textStyle.position === 'top' ? 'justify-start mt-12' : 
-          textStyle.position === 'bottom' ? 'justify-end mb-32' : 
-          'justify-center'
-        } text-center`}>
-          <p 
+        <div className={`absolute inset-0 p-12 flex flex-col pointer-events-none ${textStyle.position === 'top' ? 'justify-start mt-12' :
+            textStyle.position === 'bottom' ? 'justify-end mb-32' :
+              'justify-center'
+          } text-center`}>
+          <p
             className="font-black leading-tight italic tracking-tight mb-4"
-            style={{ 
-              fontSize: `${textStyle.fontSize}px`, 
+            style={{
+              fontSize: `${textStyle.fontSize}px`,
               color: textStyle.color,
               fontFamily: textStyle.fontFamily,
               textShadow: '0 4px 12px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.4)'
@@ -123,8 +122,8 @@ const ViewCard = () => {
               <div
                 key={deco.id}
                 className="absolute"
-                style={{ 
-                  left: `${deco.x}%`, 
+                style={{
+                  left: `${deco.x}%`,
                   top: `${deco.y}%`,
                   width: `${deco.size}px`,
                   height: `${deco.size}px`,
@@ -133,21 +132,21 @@ const ViewCard = () => {
                 }}
               >
                 {deco.type === 'internet' ? (
-                  <img 
-                    src={deco.url} 
-                    alt="Sticker" 
+                  <img
+                    src={deco.url}
+                    alt="Sticker"
                     className="w-full h-full object-contain drop-shadow-lg"
                     crossOrigin="anonymous"
                   />
                 ) : (
-                  <Icon 
-                    size={deco.size} 
-                    style={{ 
+                  <Icon
+                    size={deco.size}
+                    style={{
                       color: '#ffffff',
                       fill: config.color,
                     }}
-                    className="w-full h-full drop-shadow-md" 
-                    strokeWidth={2.5} 
+                    className="w-full h-full drop-shadow-md"
+                    strokeWidth={2.5}
                   />
                 )}
               </div>
@@ -159,24 +158,24 @@ const ViewCard = () => {
         <div className="absolute bottom-16 left-10 right-10 flex items-center gap-6 p-6 rounded-[2rem] bg-black/50 backdrop-blur-xl border border-white/10 shadow-2xl z-50">
           <div className="relative flex-shrink-0">
             {senderProfilePic && !senderImgError ? (
-              <img 
-                src={senderProfilePic} 
-                alt="Sender" 
-                crossOrigin="anonymous" 
-                className="w-16 h-16 rounded-full object-cover border-2 border-primary shadow-2xl" 
+              <img
+                src={senderProfilePic}
+                alt="Sender"
+                crossOrigin="anonymous"
+                className="w-16 h-16 rounded-full object-cover border-2 border-primary shadow-2xl"
                 onError={() => setSenderImgError(true)}
               />
             ) : (
               <div className="w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-primary to-secondary flex-shrink-0 relative border-2 border-primary shadow-2xl">
                 <svg width="100%" height="100%" viewBox="0 0 64 64" className="absolute inset-0">
-                  <text 
-                    x="50%" 
-                    y="52%" 
-                    dominantBaseline="middle" 
-                    textAnchor="middle" 
-                    fill="white" 
-                    fontSize="32" 
-                    fontWeight="900" 
+                  <text
+                    x="50%"
+                    y="52%"
+                    dominantBaseline="middle"
+                    textAnchor="middle"
+                    fill="white"
+                    fontSize="32"
+                    fontWeight="900"
                     fontFamily="Inter, sans-serif"
                   >
                     {senderName?.charAt(0) || 'U'}
