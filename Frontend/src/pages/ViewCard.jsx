@@ -8,7 +8,8 @@ import {
   Sparkles,
   PartyPopper,
   Wand2,
-  Home as HomeIcon
+  Home as HomeIcon,
+  X
 } from 'lucide-react';
 
 const ViewCard = () => {
@@ -18,12 +19,10 @@ const ViewCard = () => {
   const [error, setError] = useState(null);
   const [senderImgError, setSenderImgError] = useState(false);
 
-
   useEffect(() => {
     const fetchCard = async () => {
       try {
         const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/cards/${id}`);
-
         setCard(data);
       } catch (err) {
         console.error('Error fetching card:', err);
@@ -62,8 +61,7 @@ const ViewCard = () => {
   const { templateImageUrl, message, textStyle, decorations, senderName, senderProfilePic } = card;
 
   return (
-    <div className="flex flex-col items-center py-12 animate-[fadeIn_0.5s_ease_out] max-w-4xl mx-auto">
-
+    <div className="flex flex-col items-center py-12 px-10 animate-[fadeIn_0.5s_ease_out] max-w-4xl mx-auto overflow-x-visible">
       {/* Brand Tag */}
       <div className="mb-12">
         <Link to="/" className="bg-white/10 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/10 shadow-lg group hover:bg-white/20 transition-all flex items-center gap-3">
@@ -73,126 +71,100 @@ const ViewCard = () => {
         </Link>
       </div>
 
-      {/* Card Canvas */}
-      <div className="relative w-full max-w-[500px] aspect-[4/5] rounded-[3rem] overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.8)] bg-black ring-1 ring-white/10 animate-[scaleUp_0.6s_ease_out]">
-        <img
-          src={templateImageUrl}
-          alt="Card Background"
-          crossOrigin="anonymous"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-
-
-        {/* Premium Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/90"></div>
-
-        {/* Custom Wish Message Overlay */}
-        <div className={`absolute inset-0 p-12 flex flex-col pointer-events-none ${textStyle.position === 'top' ? 'justify-start mt-12' :
-            textStyle.position === 'bottom' ? 'justify-end mb-32' :
-              'justify-center'
-          } text-center`}>
-          <p
-            className="font-black leading-tight italic tracking-tight mb-4"
-            style={{
-              fontSize: `${textStyle.fontSize}px`,
-              color: textStyle.color,
-              fontFamily: textStyle.fontFamily,
-              textShadow: '0 4px 12px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.4)'
-            }}
-          >
-            {message}
-          </p>
-          <div className="w-12 h-1 bg-primary/60 mx-auto rounded-full shadow-lg"></div>
-        </div>
-
-        {/* Decorations Layer */}
-        <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
-          {decorations.map((deco) => {
-            const config = {
-              'heart': { icon: Heart, color: '#ef4444' },
-              'star': { icon: Star, color: '#eab308' },
-              'gift': { icon: Gift, color: '#ec4899' },
-              'sparkle': { icon: Sparkles, color: '#06b6d4' },
-              'party': { icon: PartyPopper, color: '#f97316' }
-            }[deco.type] || { icon: Sparkles, color: '#6366f1' };
-
-            const Icon = config.icon;
-
-            return (
-              <div
-                key={deco.id}
-                className="absolute"
-                style={{
-                  left: `${deco.x}%`,
-                  top: `${deco.y}%`,
-                  width: `${deco.size}px`,
-                  height: `${deco.size}px`,
-                  transform: 'translate(-50%, -50%)',
-                  filter: `drop-shadow(0 4px 12px ${config.color}40)`
-                }}
-              >
-                {deco.type === 'internet' ? (
-                  <img
-                    src={deco.url}
-                    alt="Sticker"
-                    className="w-full h-full object-contain drop-shadow-lg"
-                    crossOrigin="anonymous"
-                  />
-                ) : (
-                  <Icon
-                    size={deco.size}
-                    style={{
-                      color: '#ffffff',
-                      fill: config.color,
-                    }}
-                    className="w-full h-full drop-shadow-md"
-                    strokeWidth={2.5}
-                  />
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Sender Profile Overlay */}
-        <div className="absolute bottom-16 left-10 right-10 flex items-center gap-6 p-6 rounded-[2rem] bg-black/50 backdrop-blur-xl border border-white/10 shadow-2xl z-50">
-          <div className="relative flex-shrink-0">
-            {senderProfilePic && !senderImgError ? (
-              <img
-                src={senderProfilePic}
-                alt="Sender"
-                crossOrigin="anonymous"
-                className="w-16 h-16 rounded-full object-cover border-2 border-primary shadow-2xl"
-                onError={() => setSenderImgError(true)}
-              />
-            ) : (
-              <div className="w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-primary to-secondary flex-shrink-0 relative border-2 border-primary shadow-2xl">
-                <svg width="100%" height="100%" viewBox="0 0 64 64" className="absolute inset-0">
-                  <text
-                    x="50%"
-                    y="52%"
-                    dominantBaseline="middle"
-                    textAnchor="middle"
-                    fill="white"
-                    fontSize="32"
-                    fontWeight="900"
-                    fontFamily="Inter, sans-serif"
-                  >
-                    {senderName?.charAt(0) || 'U'}
-                  </text>
-                </svg>
-              </div>
-            )}
-
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-primary rounded-full border-2 border-black flex items-center justify-center">
-              <Sparkles size={10} className="text-black" />
-            </div>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] mb-1">Personalized By</p>
-            <h3 className="text-2xl font-black text-white whitespace-nowrap overflow-visible">
-              {senderName || 'A Friend'}
+      {/* Card Canvas Container */}
+      <div className="relative w-full max-w-[500px] aspect-[4/5] rounded-[3rem] shadow-[0_32px_80px_rgba(0,0,0,0.8)] bg-black ring-1 ring-white/10 overflow-visible">
+        
+        {/* Actual Card Body (clipped) */}
+        <div className="absolute inset-0 rounded-[3rem] overflow-hidden">
+          {/* Top Header Bar */}
+          <div className="absolute top-0 left-0 right-0 h-24 bg-[#261d18] flex items-center justify-center z-30 shadow-lg">
+            <h3 className="text-3xl font-black text-white tracking-widest uppercase">
+              {senderName || 'Wishes'}
             </h3>
+          </div>
+
+          {/* Main Image Layer */}
+          <div className="absolute inset-0 pt-24 pb-0">
+            <img
+              src={templateImageUrl}
+              alt="Card Background"
+              crossOrigin="anonymous"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+          </div>
+
+          {/* Custom Wish Message Overlay */}
+          <div className="absolute inset-0 pt-32 p-12 flex flex-col justify-center text-center z-20 pointer-events-none">
+            <p
+              className="font-black leading-tight italic tracking-tight drop-shadow-2xl"
+              style={{
+                fontSize: `${textStyle.fontSize}px`,
+                color: textStyle.color,
+                fontFamily: textStyle.fontFamily,
+                textShadow: '0 4px 12px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.4)'
+              }}
+            >
+              {message}
+            </p>
+          </div>
+
+          {/* Decorations Layer */}
+          <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
+            {decorations && decorations.map((deco) => {
+              const config = {
+                'heart': { icon: Heart, color: '#ef4444' },
+                'star': { icon: Star, color: '#eab308' },
+                'gift': { icon: Gift, color: '#ec4899' },
+                'sparkle': { icon: Sparkles, color: '#06b6d4' },
+                'party': { icon: PartyPopper, color: '#f97316' }
+              }[deco.type] || { icon: Sparkles, color: '#6366f1' };
+              const Icon = config.icon;
+              return (
+                <div
+                  key={deco.id}
+                  className="absolute"
+                  style={{
+                    left: `${deco.x}%`,
+                    top: `${deco.y}%`,
+                    width: `${deco.size}px`,
+                    height: `${deco.size}px`,
+                    transform: 'translate(-50%, -50%)',
+                    filter: `drop-shadow(0 4px 12px ${config.color}40)`
+                  }}
+                >
+                  {deco.type === 'internet' ? (
+                    <img src={deco.url} alt="" className="w-full h-full object-contain drop-shadow-lg" crossOrigin="anonymous" />
+                  ) : (
+                    <Icon size={deco.size} style={{ color: '#ffffff', fill: config.color }} className="w-full h-full drop-shadow-md" strokeWidth={2.5} />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Floating Profile Picture (Outside clipped area to overlap edge) */}
+        <div className="absolute top-20 -left-6 z-50 w-36 h-36 animate-[fadeIn_0.5s_ease_out]">
+          <div className="relative w-full h-full p-1.5 bg-[#22c55e] rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.4)] ring-4 ring-black/20">
+            <div className="w-full h-full rounded-full overflow-hidden bg-white">
+              {senderProfilePic && !senderImgError ? (
+                <img
+                  src={senderProfilePic}
+                  alt="Sender"
+                  crossOrigin="anonymous"
+                  className="w-full h-full object-cover"
+                  onError={() => setSenderImgError(true)}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/80 to-secondary/80 text-white font-black text-4xl">
+                  {senderName?.charAt(0) || 'U'}
+                </div>
+              )}
+            </div>
+            <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-primary rounded-full border-4 border-[#261d18] flex items-center justify-center shadow-lg">
+              <Sparkles size={14} className="text-black" />
+            </div>
           </div>
         </div>
       </div>
@@ -206,7 +178,6 @@ const ViewCard = () => {
           <span className="font-black tracking-wide">Start Creating</span>
         </Link>
       </div>
-
     </div>
   );
 };

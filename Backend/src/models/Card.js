@@ -14,16 +14,10 @@ const cardSchema = new mongoose.Schema(
       position: String,
       fontFamily: String,
     },
-    decorations: [
-      {
-        id: Number,
-        type: String,
-        url: String,
-        x: Number,
-        y: Number,
-        size: Number,
-      }
-    ],
+    decorations: {
+      type: Array,
+      default: []
+    },
     senderName: String,
     senderProfilePic: String,
   },

@@ -69,11 +69,11 @@ const Home = () => {
     setProfileImgError(false);
   }, [user?.profilePicture]);
 
-  const addDecoration = (type, url = null) => {
+  const addDecoration = (type, url = "") => {
     const newDeco = {
       id: Date.now(),
       type,
-      url,
+      url: url || "", // Ensure url is never null
       x: 50,
       y: 50,
       size: type === 'internet' ? 100 : 40 
@@ -85,11 +85,17 @@ const Home = () => {
     if (isDragging !== id || isResizing) return;
     
     const rect = e.currentTarget.parentElement.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
     
     setDecorations(decorations.map(d => 
-      d.id === id ? { ...d, x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) } : d
+      d.id === id ? { 
+        ...d, 
+        x: Math.max(0, Math.min(100, x || 0)), 
+        y: Math.max(0, Math.min(100, y || 0)) 
+      } : d
     ));
   };
 
@@ -103,7 +109,7 @@ const Home = () => {
     const centerY = rect.top + rect.height / 2;
     
     const dist = Math.sqrt(Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2));
-    const newSize = Math.max(20, Math.min(200, dist * 2));
+    const newSize = Math.max(20, Math.min(200, (dist * 2) || 40));
 
     setDecorations(decorations.map(d => 
       d.id === id ? { ...d, size: newSize } : d
@@ -218,16 +224,23 @@ const Home = () => {
       const cardData = {
         templateImageUrl: selectedTemplate.imageUrl,
         templateName: selectedTemplate.name || selectedTemplate.category,
-        message: customMessage,
+        message: customMessage || "",
         textStyle: {
-          fontSize: textSize,
-          color: textColor,
-          position: textPosition,
-          fontFamily: fontFamily
+          fontSize: textSize || 24,
+          color: textColor || "#ffffff",
+          position: textPosition || "center",
+          fontFamily: fontFamily || "inherit"
         },
-        decorations: decorations,
+        decorations: decorations.map(d => ({
+          id: d.id,
+          type: d.type,
+          url: d.url || "",
+          x: Number(d.x) || 0,
+          y: Number(d.y) || 0,
+          size: Number(d.size) || 40
+        })),
         senderName: user?.name || 'Guest User',
-        senderProfilePic: user?.profilePicture
+        senderProfilePic: user?.profilePicture || ""
       };
       const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/cards`, cardData);
       setGeneratedLink(`${window.location.origin}/card/${data._id}`);
@@ -396,19 +409,133 @@ const Home = () => {
 
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 lg:h-[85vh]">
                   {/* Canvas */}
-                  <div className="glass-panel p-4 md:p-8 flex items-center justify-center overflow-hidden">
-                    <div id="card-preview" className="relative w-full aspect-[4/5] max-h-full rounded-[2.5rem] overflow-hidden shadow-2xl bg-black ring-1 ring-white/10">
-                      <img src={selectedTemplate.imageUrl} alt="" crossOrigin="anonymous" className="absolute inset-0 w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/90"></div>
+                  <div className="glass-panel p-4 md:p-8 flex items-center justify-center overflow-visible">
+                    <div id="card-preview" className="relative w-full aspect-[4/5] rounded-[2.5rem] shadow-2xl bg-black ring-1 ring-white/10 overflow-visible">
                       
-                      <div className={`absolute inset-0 p-12 flex flex-col pointer-events-none ${textPosition === 'top' ? 'justify-start mt-12' : textPosition === 'bottom' ? 'justify-end mb-32' : 'justify-center'} text-center`}>
-                        <p className="font-black leading-tight italic tracking-tight mb-4" style={{ fontSize: `${textSize}px`, color: textColor, fontFamily: fontFamily, textShadow: '0 4px 12px rgba(0,0,0,0.8)' }}>
-                          {customMessage || 'Type your message...'}
-                        </p>
-                        <div className="w-12 h-1 bg-primary/60 mx-auto rounded-full"></div>
+                      {/* Inner body to clip background images but not profile pic */}
+                      <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden">
+                        {/* Top Header Bar (Matching Reference) */}
+                        <div className="absolute top-0 left-0 right-0 h-24 bg-[#261d18] flex items-center justify-center z-30 shadow-lg">
+                          <h3 className="text-2xl font-black text-white tracking-widest uppercase">
+                            {user?.name || 'Wishes'}
+                          </h3>
+                        </div>
+
+                        {/* Main Image Layer */}
+                        <div className="absolute inset-0 pt-24 pb-0">
+                          <img src={selectedTemplate.imageUrl} alt="" crossOrigin="anonymous" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                        </div>
+                        
+                        {/* Custom Wish Message Overlay */}
+                        <div className="absolute inset-0 pt-32 p-12 flex flex-col justify-center text-center z-20 pointer-events-none">
+                          <p
+                            className="font-black leading-tight italic tracking-tight drop-shadow-2xl"
+                            style={{
+                              fontSize: `${textSize}px`,
+                              color: textColor,
+                              fontFamily: fontFamily,
+                              textShadow: '0 4px 12px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.4)'
+                            }}
+                          >
+                            {customMessage || 'Type your message...'}
+                          </p>
+                        </div>
+
+                        {/* Decorations Layer */}
+                        <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
+                          {decorations.map((deco) => {
+                            const config = {
+                              'heart': { icon: Heart, color: '#ef4444' },
+                              'star': { icon: Star, color: '#eab308' },
+                              'gift': { icon: Gift, color: '#ec4899' },
+                              'sparkle': { icon: Sparkles, color: '#06b6d4' },
+                              'party': { icon: PartyPopper, color: '#f97316' }
+                            }[deco.type] || { icon: Sparkles, color: '#6366f1' };
+                            const Icon = config.icon;
+                            return (
+                              <div
+                                key={deco.id}
+                                className="absolute"
+                                style={{
+                                  left: `${deco.x}%`,
+                                  top: `${deco.y}%`,
+                                  width: `${deco.size}px`,
+                                  height: `${deco.size}px`,
+                                  transform: 'translate(-50%, -50%)',
+                                  filter: `drop-shadow(0 4px 12px ${config.color}40)`
+                                }}
+                              >
+                                {deco.type === 'internet' ? (
+                                  <img src={deco.url} alt="" className="w-full h-full object-contain drop-shadow-lg" crossOrigin="anonymous" />
+                                ) : (
+                                  <Icon size={deco.size} style={{ color: '#ffffff', fill: config.color }} className="w-full h-full drop-shadow-md" strokeWidth={2.5} stroke="currentColor" />
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
 
-                      <div className="absolute inset-0 z-20 pointer-events-auto overflow-hidden"
+                      {/* Floating Profile Picture (Matching Reference) - Outside clip area */}
+                      <div className="absolute top-20 -left-6 z-50 w-32 h-32">
+                        <div className="relative w-full h-full p-1.5 bg-[#22c55e] rounded-full shadow-2xl ring-4 ring-black/20">
+                          <div className="w-full h-full rounded-full overflow-hidden bg-white">
+                            {user?.profilePicture && !profileImgError ? (
+                              <img
+                                src={user.profilePicture}
+                                alt="Sender"
+                                crossOrigin="anonymous"
+                                className="w-full h-full object-cover"
+                                onError={() => setProfileImgError(true)}
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/80 to-secondary/80 text-white font-black text-3xl">
+                                {user?.name?.charAt(0) || 'U'}
+                              </div>
+                            )}
+                          </div>
+                          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full border-2 border-black flex items-center justify-center">
+                            <Sparkles size={10} className="text-black" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Decorations Layer */}
+                      <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
+                        {decorations.map((deco) => {
+                          const config = {
+                            'heart': { icon: Heart, color: '#ef4444' },
+                            'star': { icon: Star, color: '#eab308' },
+                            'gift': { icon: Gift, color: '#ec4899' },
+                            'sparkle': { icon: Sparkles, color: '#06b6d4' },
+                            'party': { icon: PartyPopper, color: '#f97316' }
+                          }[deco.type] || { icon: Sparkles, color: '#6366f1' };
+                          const Icon = config.icon;
+                          return (
+                            <div
+                              key={deco.id}
+                              className="absolute"
+                              style={{
+                                left: `${deco.x}%`,
+                                top: `${deco.y}%`,
+                                width: `${deco.size}px`,
+                                height: `${deco.size}px`,
+                                transform: 'translate(-50%, -50%)',
+                                filter: `drop-shadow(0 4px 12px ${config.color}40)`
+                              }}
+                            >
+                              {deco.type === 'internet' ? (
+                                <img src={deco.url} alt="" className="w-full h-full object-contain drop-shadow-lg" crossOrigin="anonymous" />
+                              ) : (
+                                <Icon size={deco.size} style={{ color: '#ffffff', fill: config.color }} className="w-full h-full drop-shadow-md" strokeWidth={2.5} />
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      <div className="absolute inset-0 z-40 pointer-events-auto overflow-hidden"
                         onMouseMove={(e) => { if (isDragging) handleDrag(isDragging, e); if (isResizing) handleResize(isResizing, e); }}
                         onMouseUp={() => { setIsDragging(null); setIsResizing(null); }}
                         onMouseLeave={() => { setIsDragging(null); setIsResizing(null); }}
@@ -426,35 +553,6 @@ const Home = () => {
                         })}
                       </div>
 
-                      <div className="absolute bottom-16 left-10 right-10 flex items-center p-6 rounded-[2rem] bg-black/60 backdrop-blur-xl border border-white/10 shadow-2xl z-50" style={{ gap: '24px' }}>
-                        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary flex-shrink-0 bg-primary relative">
-                          {user?.profilePicture && !profileImgError ? (
-                            <img src={user.profilePicture} alt="" className="w-full h-full object-cover" onError={() => setProfileImgError(true)} />
-                          ) : (
-                            <svg width="100%" height="100%" viewBox="0 0 64 64" className="absolute inset-0">
-                              <rect width="64" height="64" fill="currentColor" className="text-primary" />
-                              <text 
-                                x="50%" 
-                                y="52%" 
-                                dominantBaseline="middle" 
-                                textAnchor="middle" 
-                                fill="white" 
-                                fontSize="32" 
-                                fontWeight="900" 
-                                fontFamily="Inter, sans-serif"
-                              >
-                                {user?.name?.charAt(0) || 'U'}
-                              </text>
-                            </svg>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] mb-1" style={{ letterSpacing: '0.2em' }}>Personalized By</p>
-                          <h3 className="text-2xl font-black text-white" style={{ whiteSpace: 'nowrap', overflow: 'visible' }}>
-                            {user?.name || 'Your Name'}
-                          </h3>
-                        </div>
-                      </div>
                     </div>
                   </div>
 
