@@ -95,7 +95,11 @@ const ViewCard = () => {
           </div>
 
           {/* Custom Wish Message Overlay */}
-          <div className="absolute inset-0 pt-32 p-12 flex flex-col justify-center text-center z-20 pointer-events-none">
+          <div className={`absolute inset-0 pt-32 p-12 flex flex-col pointer-events-none z-20 text-center ${
+            textStyle.position === 'top' ? 'justify-start' : 
+            textStyle.position === 'bottom' ? 'justify-end pb-24' : 
+            'justify-center'
+          }`}>
             <p
               className="font-black leading-tight italic tracking-tight drop-shadow-2xl"
               style={{
