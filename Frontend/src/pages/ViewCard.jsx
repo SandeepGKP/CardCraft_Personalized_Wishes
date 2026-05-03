@@ -68,7 +68,7 @@ const ViewCard = () => {
       <div className="mb-12">
         <Link to="/" className="bg-white/10 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/10 shadow-lg group hover:bg-white/20 transition-all flex items-center gap-3">
           <p className="text-xs font-black text-maintext/60 tracking-[0.2em] uppercase flex items-center gap-2">
-            Created with CardCraft <span className="text-primary font-black flex items-center gap-1">AI <Sparkles size={12} /></span>
+            Created with CardCraft <span className="text-primary font-black flex items-center gap-1"> <Sparkles size={12} /></span>
           </p>
         </Link>
       </div>
@@ -200,7 +200,7 @@ const ViewCard = () => {
       {/* Footer / Call to Action */}
       <div className="mt-16 text-center flex flex-col items-center gap-6">
         <h3 className="text-xl font-bold text-white tracking-tight">Want to create your own?</h3>
-        <p className="text-gray-400 max-w-sm">Surprise your loved ones with a personalized AI-generated wish card.</p>
+        <p className="text-gray-400 max-w-sm">Surprise your loved ones with a personalized generated wish card.</p>
         <Link to="/" className="btn btn-primary px-10 py-4 rounded-2xl flex items-center gap-3 group shadow-[0_20px_40px_rgba(99,102,241,0.4)]">
           <Wand2 size={20} className="group-hover:rotate-12 transition-transform" />
           <span className="font-black tracking-wide">Start Creating</span>

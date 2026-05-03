@@ -20,7 +20,9 @@ const AppContent = () => {
   const location = useLocation();
   const { user, token } = useSelector((state) => state.auth);
   const { currentTheme } = useSelector((state) => state.theme);
-  const hideNavbar = location.pathname.startsWith('/card/');
+  
+  // More robust path detection
+  const hideNavbar = location.pathname.includes('/card/');
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', currentTheme);
