@@ -47,7 +47,7 @@ const Home = () => {
   const [backgroundColor, setBackgroundColor] = useState('#6366f1');
   const [outerBgColor, setOuterBgColor] = useState('#0a0a0a');
   const [cardSize, setCardSize] = useState(440);
-  const [fontFamily, setFontFamily] = useState("'Inter', sans-serif");
+  const [fontFamily, setFontFamily] = useState("'Dancing Script', cursive");
   const [decorations, setDecorations] = useState([]);
   const [isDragging, setIsDragging] = useState(null);
   const [isResizing, setIsResizing] = useState(null);
@@ -67,6 +67,24 @@ const Home = () => {
   const [isNativeSharing, setIsNativeSharing] = useState(false);
   const [preparedShareFile, setPreparedShareFile] = useState(null);
   const [profileImgError, setProfileImgError] = useState(false);
+  const [showMobileWarning, setShowMobileWarning] = useState(false);
+
+  // Detect mobile for warning
+  useEffect(() => {
+    const checkMobile = () => {
+      if (window.innerWidth < 1024) {
+        // Show once per session
+        const hasSeen = sessionStorage.getItem('mobile_warning_seen');
+        if (!hasSeen) setShowMobileWarning(true);
+      }
+    };
+    checkMobile();
+  }, []);
+
+  const dismissMobileWarning = () => {
+    setShowMobileWarning(false);
+    sessionStorage.setItem('mobile_warning_seen', 'true');
+  };
 
   // Reset image error when profile picture changes
   useEffect(() => {
@@ -348,6 +366,32 @@ const Home = () => {
 
   return (
     <div className="flex flex-col gap-8 pb-12 animate-[fadeIn_0.5s_ease_out]">
+      {showMobileWarning && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-[fadeIn_0.3s_ease_out]">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-xl"></div>
+          <div className="relative glass-panel p-8 max-w-sm w-full text-center border-primary/20 shadow-[0_0_50px_rgba(99,102,241,0.2)]">
+            <div className="w-20 h-20 bg-primary/20 rounded-3xl flex items-center justify-center text-primary mx-auto mb-6">
+              <Monitor size={40} />
+            </div>
+            <h2 className="text-2xl font-black text-white mb-3">Better on Desktop!</h2>
+            <p className="text-gray-400 text-sm leading-relaxed mb-8">
+              For the best design experience, we recommend switching to a bigger screen or using desktop mode.
+            </p>
+            <div className="flex flex-col gap-3">
+              <button 
+                onClick={dismissMobileWarning}
+                className="btn btn-primary w-full py-4 rounded-2xl text-sm font-black uppercase tracking-widest"
+              >
+                Continue Anyway
+              </button>
+              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                All features work in mobile
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <SubscriptionModal isOpen={showSubscription} onClose={() => setShowSubscription(false)} />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -427,12 +471,19 @@ const Home = () => {
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 lg:h-[85vh]">
                     {/* Canvas */}
                     <div id="capture-area" className="p-10 flex items-center justify-center overflow-visible transition-colors duration-500" style={{ backgroundColor: outerBgColor }}>
-                      <div id="card-preview" className="relative w-full aspect-[4/5] rounded-[2.5rem] shadow-2xl bg-black ring-1 ring-white/10 overflow-visible transition-all duration-300" style={{ maxWidth: `${cardSize}px` }}>
-
+                      <div id="card-preview" className="relative w-full aspect-[4/5] rounded-[0.5rem] shadow-2xl bg-black ring-1 ring-white/10 overflow-visible transition-all duration-300" style={{ maxWidth: `${cardSize}px` }}>
+                        
                         {/* Inner body to clip background images but not profile pic */}
-                        <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden">
+                        <div className="absolute inset-0 rounded-[0.5rem] zigzag-top-bottom overflow-hidden">
+                          {/* Zigzag Top SVG Overlay */}
+                          <div className="absolute top-0 left-0 right-0 z-40 pointer-events-none h-4">
+                            <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none" className="w-full h-full">
+                              <polygon points="0,0 2.5,10 5,0 7.5,10 10,0 12.5,10 15,0 17.5,10 20,0 22.5,10 25,0 27.5,10 30,0 32.5,10 35,0 37.5,10 40,0 42.5,10 45,0 47.5,10 50,0 52.5,10 55,0 57.5,10 60,0 62.5,10 65,0 67.5,10 70,0 72.5,10 75,0 77.5,10 80,0 82.5,10 85,0 87.5,10 90,0 92.5,10 95,0 97.5,10 100,0 100,10 0,10" fill={outerBgColor} />
+                            </svg>
+                          </div>
+
                           {/* Top Header Bar (Matching Reference) */}
-                          <div className="absolute top-0 left-0 right-0 h-24 bg-[#261d18] flex items-center justify-center z-30 shadow-lg">
+                          <div className="absolute top-0 left-0 right-0 h-24 bg-gray-500 flex items-center justify-center z-30 shadow-lg">
                             <h3 className="text-2xl font-black text-white tracking-widest uppercase">
                               {user?.name || 'Wishes'}
                             </h3>
@@ -503,7 +554,13 @@ const Home = () => {
                                 </div>
                               );
                             })}
+                            {/* Zigzag Bottom SVG Overlay */}
+                          <div className="absolute bottom-0 left-0 right-0 z-40 pointer-events-none h-4">
+                            <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none" className="w-full h-full">
+                              <polygon points="0,10 2.5,0 5,10 7.5,0 10,10 12.5,0 15,10 17.5,0 20,10 22.5,0 25,10 27.5,0 30,10 32.5,0 35,10 37.5,0 40,10 42.5,0 45,10 47.5,0 50,10 52.5,0 55,10 57.5,0 60,10 62.5,0 65,10 67.5,0 70,10 72.5,0 75,10 77.5,0 80,10 82.5,0 85,10 87.5,0 90,10 92.5,0 95,10 97.5,0 100,10 100,0 0,0" fill={outerBgColor} />
+                            </svg>
                           </div>
+                        </div>
                         </div>
 
                         {/* Floating Profile Picture (Matching Reference) - Outside clip area */}
@@ -548,39 +605,6 @@ const Home = () => {
                           </div>
                         </div>
 
-                        {/* Decorations Layer */}
-                        <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
-                          {decorations.map((deco) => {
-                            const config = {
-                              'heart': { icon: Heart, color: '#ef4444' },
-                              'star': { icon: Star, color: '#eab308' },
-                              'gift': { icon: Gift, color: '#ec4899' },
-                              'sparkle': { icon: Sparkles, color: '#06b6d4' },
-                              'party': { icon: PartyPopper, color: '#f97316' }
-                            }[deco.type] || { icon: Sparkles, color: '#6366f1' };
-                            const Icon = config.icon;
-                            return (
-                              <div
-                                key={deco.id}
-                                className="absolute"
-                                style={{
-                                  left: `${deco.x}%`,
-                                  top: `${deco.y}%`,
-                                  width: `${deco.size}px`,
-                                  height: `${deco.size}px`,
-                                  transform: 'translate(-50%, -50%)',
-                                  filter: `drop-shadow(0 4px 12px ${config.color}40)`
-                                }}
-                              >
-                                {deco.type === 'internet' ? (
-                                  <img src={deco.url} alt="" className="w-full h-full object-contain drop-shadow-lg" crossOrigin="anonymous" />
-                                ) : (
-                                  <Icon size={deco.size} style={{ color: '#ffffff', fill: config.color }} className="w-full h-full drop-shadow-md" strokeWidth={2.5} />
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
 
                         <div className="absolute inset-0 z-40 pointer-events-auto overflow-hidden"
                           onMouseMove={(e) => { if (isDragging) handleDrag(isDragging, e); if (isResizing) handleResize(isResizing, e); }}

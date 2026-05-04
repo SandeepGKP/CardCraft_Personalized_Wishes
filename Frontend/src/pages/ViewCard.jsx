@@ -73,14 +73,21 @@ const ViewCard = () => {
 
       {/* Card Canvas Container */}
       <div 
-        className="relative w-full aspect-[4/5] rounded-[3rem] shadow-[0_32px_80px_rgba(0,0,0,0.8)] bg-black ring-1 ring-white/10 overflow-visible transition-all duration-500"
+        className="relative w-full aspect-[4/5] rounded-[0.5rem] shadow-[0_32px_80px_rgba(0,0,0,0.8)] bg-black ring-1 ring-white/10 overflow-visible transition-all duration-500"
         style={{ maxWidth: `${card.cardSize || 440}px` }}
       >
 
         {/* Actual Card Body (clipped) */}
-        <div className="absolute inset-0 rounded-[3rem] overflow-hidden">
+        <div className="absolute inset-0 rounded-[0.5rem] zigzag-top-bottom overflow-hidden">
+          {/* Zigzag Top SVG Overlay */}
+          <div className="absolute top-0 left-0 right-0 z-40 pointer-events-none h-4">
+            <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none" className="w-full h-full">
+              <polygon points="0,0 2.5,10 5,0 7.5,10 10,0 12.5,10 15,0 17.5,10 20,0 22.5,10 25,0 27.5,10 30,0 32.5,10 35,0 37.5,10 40,0 42.5,10 45,0 47.5,10 50,0 52.5,10 55,0 57.5,10 60,0 62.5,10 65,0 67.5,10 70,0 72.5,10 75,0 77.5,10 80,0 82.5,10 85,0 87.5,10 90,0 92.5,10 95,0 97.5,10 100,0 100,10 0,10" fill={card.outerBgColor || '#0a0a0a'} />
+            </svg>
+          </div>
+
           {/* Top Header Bar */}
-          <div className="absolute top-0 left-0 right-0 h-24 bg-[#261d18] flex items-center justify-center z-30 shadow-lg">
+          <div className="absolute top-0 left-0 right-0 h-24 bg-gray-500 flex items-center justify-center z-30 shadow-lg">
             <h3 className="text-3xl font-black text-white tracking-widest uppercase">
               {senderName || 'Wishes'}
             </h3>
@@ -198,6 +205,12 @@ const ViewCard = () => {
             <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-primary rounded-full border-4 border-[#261d18] flex items-center justify-center shadow-lg">
               <Sparkles size={14} className="text-black" />
             </div>
+          </div>
+          {/* Zigzag Bottom SVG Overlay */}
+          <div className="absolute bottom-0 left-0 right-0 z-40 pointer-events-none h-4">
+            <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none" className="w-full h-full">
+              <polygon points="0,10 2.5,0 5,10 7.5,0 10,10 12.5,0 15,10 17.5,0 20,10 22.5,0 25,10 27.5,0 30,10 32.5,0 35,10 37.5,0 40,10 42.5,0 45,10 47.5,0 50,10 52.5,0 55,10 57.5,0 60,10 62.5,0 65,10 67.5,0 70,10 72.5,0 75,10 77.5,0 80,10 82.5,0 85,10 87.5,0 90,10 92.5,0 95,10 97.5,0 100,10 100,0 0,0" fill={card.outerBgColor || '#0a0a0a'} />
+            </svg>
           </div>
         </div>
       </div>
