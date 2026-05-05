@@ -46,7 +46,7 @@ const Home = () => {
   const [textPosition, setTextPosition] = useState('center');
   const [backgroundMode, setBackgroundMode] = useState('image');
   const [backgroundColor, setBackgroundColor] = useState('#6366f1');
-  const [outerBgColor, setOuterBgColor] = useState('#0a0a0a');
+  const [outerBgColor, setOuterBgColor] = useState('#a19e9eff');
   const [cardSize, setCardSize] = useState(440);
   const [fontFamily, setFontFamily] = useState("'Dancing Script', cursive");
   const [decorations, setDecorations] = useState([]);
