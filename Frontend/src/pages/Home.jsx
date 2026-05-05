@@ -948,7 +948,7 @@ const Home = () => {
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-                {templates.map(template => (
+                {templates.length > 0 && templates.map(template => (
                   <div key={template._id} onClick={() => handleTemplateClick(template)} className={`relative aspect-[4/5] rounded-3xl overflow-hidden cursor-pointer group transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl ${selectedTemplate?._id === template._id ? 'ring-4 ring-primary' : 'ring-1 ring-white/10'}`}>
                     <img src={template.imageUrl} alt="" crossOrigin="anonymous" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=800&q=80'; }} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90 transition-opacity group-hover:opacity-100"></div>
@@ -962,9 +962,12 @@ const Home = () => {
                     {template.isPremium && <div className="absolute top-4 right-4 bg-yellow-500 text-black text-[10px] font-black px-2 py-1 rounded shadow-xl flex items-center gap-1 z-10"><Crown size={10} /> PRO</div>}
                   </div>
                 ))}
+              </div>)}
+
+              {!templates.length && <div className="flex h-fit w-full justify-center">No templates found</div>}
+              
               </div>
-            )}
-          </div>
+
         </div>
       </div>
     </div>
