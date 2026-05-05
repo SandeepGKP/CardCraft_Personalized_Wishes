@@ -68,25 +68,7 @@ const Home = () => {
   const [isNativeSharing, setIsNativeSharing] = useState(false);
   const [preparedShareFile, setPreparedShareFile] = useState(null);
   const [profileImgError, setProfileImgError] = useState(false);
-  const [showMobileWarning, setShowMobileWarning] = useState(false);
   const [isMobileSettingsOpen, setIsMobileSettingsOpen] = useState(false);
-
-  // Detect mobile for warning
-  useEffect(() => {
-    const checkMobile = () => {
-      if (window.innerWidth < 1024) {
-        // Show once per session
-        const hasSeen = sessionStorage.getItem('mobile_warning_seen');
-        if (!hasSeen) setShowMobileWarning(true);
-      }
-    };
-    checkMobile();
-  }, []);
-
-  const dismissMobileWarning = () => {
-    setShowMobileWarning(false);
-    sessionStorage.setItem('mobile_warning_seen', 'true');
-  };
 
   // Reset image error when profile picture changes
   useEffect(() => {
@@ -368,31 +350,6 @@ const Home = () => {
 
   return (
     <div className="flex flex-col gap-8 pb-12 animate-[fadeIn_0.5s_ease_out]">
-      {showMobileWarning && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-[fadeIn_0.3s_ease_out]">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-xl"></div>
-          <div className="relative glass-panel p-8 max-w-sm w-full text-center border-primary/20 shadow-[0_0_50px_rgba(99,102,241,0.2)]">
-            <div className="w-20 h-20 bg-primary/20 rounded-3xl flex items-center justify-center text-primary mx-auto mb-6">
-              <Monitor size={40} />
-            </div>
-            <h2 className="text-2xl font-black text-white mb-3">Better on Desktop!</h2>
-            <p className="text-gray-400 text-sm leading-relaxed mb-8">
-              For the best design experience, we recommend switching to a bigger screen or using desktop mode.
-            </p>
-            <div className="flex flex-col gap-3">
-              <button 
-                onClick={dismissMobileWarning}
-                className="btn btn-primary w-full py-4 rounded-2xl text-sm font-black uppercase tracking-widest"
-              >
-                Continue Anyway
-              </button>
-              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-                All features work in mobile
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
 
       <SubscriptionModal isOpen={showSubscription} onClose={() => setShowSubscription(false)} />
 
