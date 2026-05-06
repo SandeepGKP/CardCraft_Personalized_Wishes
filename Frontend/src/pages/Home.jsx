@@ -858,7 +858,7 @@ const Home = () => {
                             </div>
                             <div className="flex flex-col gap-3">
                               <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Size ({textSize}px)</label>
-                              <div className="h-full flex items-center bg-surface/50 p-2 rounded-2xl border border-primary/10"><input type="range" min="16" max="72" className="w-full accent-primary" value={textSize} onChange={(e) => setTextSize(parseInt(e.target.value))} /></div>
+                              <div className="h-full flex items-center bg-surface/50 p-2 rounded-2xl border border-primary/10 "><input type="range" min="8" max="72" className="w-full accent-primary" value={textSize} onChange={(e) => setTextSize(parseInt(e.target.value))} /></div>
                             </div>
                           </div>
 
