@@ -50,6 +50,8 @@ const Home = () => {
   const [cardSize, setCardSize] = useState(440);
   const [fontFamily, setFontFamily] = useState("'Dancing Script', cursive");
   const [decorations, setDecorations] = useState([]);
+  const [textX, setTextX] = useState(50);
+  const [textY, setTextY] = useState(50);
   const [isDragging, setIsDragging] = useState(null);
   const [isResizing, setIsResizing] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -93,16 +95,30 @@ const Home = () => {
     const rect = e.currentTarget.parentElement.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return;
 
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    // Support both mouse and touch events
+    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+    const clientY = e.clientY || (e.touches && e.touches[0].clientY);
 
-    setDecorations(decorations.map(d =>
-      d.id === id ? {
-        ...d,
-        x: Math.max(0, Math.min(100, x || 0)),
-        y: Math.max(0, Math.min(100, y || 0))
-      } : d
-    ));
+    if (clientX === undefined || clientY === undefined) return;
+
+    const x = ((clientX - rect.left) / rect.width) * 100;
+    const y = ((clientY - rect.top) / rect.height) * 100;
+
+    const boundedX = Math.max(0, Math.min(100, x || 0));
+    const boundedY = Math.max(0, Math.min(100, y || 0));
+
+    if (id === 'wish') {
+      setTextX(boundedX);
+      setTextY(boundedY);
+    } else {
+      setDecorations(decorations.map(d =>
+        d.id === id ? {
+          ...d,
+          x: boundedX,
+          y: boundedY
+        } : d
+      ));
+    }
   };
 
   const handleResize = (id, e) => {
@@ -431,7 +447,7 @@ const Home = () => {
                     {/* Canvas */}
                     <div id="capture-area" className="p-10 flex items-center justify-center overflow-visible transition-colors duration-500" style={{ backgroundColor: outerBgColor }}>
                       <div id="card-preview" className="relative w-full aspect-[4/5] rounded-[0.5rem] shadow-2xl bg-black ring-1 ring-white/10 overflow-visible transition-all duration-300" style={{ maxWidth: `${cardSize}px` }}>
-                        
+
                         {/* Inner body to clip background images but not profile pic */}
                         <div className="absolute inset-0 rounded-[0.5rem] zigzag-top-bottom overflow-hidden">
                           {/* Zigzag Top SVG Overlay */}
@@ -463,23 +479,6 @@ const Home = () => {
                             )}
                           </div>
 
-                          {/* Custom Wish Message Overlay */}
-                          <div className={`absolute inset-0 pt-32 p-12 flex flex-col pointer-events-none z-20 text-center ${textPosition === 'top' ? 'justify-start' :
-                            textPosition === 'bottom' ? 'justify-end pb-24' :
-                              'justify-center'
-                            }`}>
-                            <p
-                              className="font-black leading-tight italic tracking-tight drop-shadow-2xl"
-                              style={{
-                                fontSize: `${textSize}px`,
-                                color: textColor,
-                                fontFamily: fontFamily,
-                                textShadow: '0 4px 12px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.4)'
-                              }}
-                            >
-                              {customMessage || 'Type your message...'}
-                            </p>
-                          </div>
 
                           {/* Decorations Layer */}
                           <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
@@ -514,12 +513,12 @@ const Home = () => {
                               );
                             })}
                             {/* Zigzag Bottom SVG Overlay */}
-                          <div className="absolute bottom-0 left-0 right-0 z-40 pointer-events-none h-4">
-                            <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none" className="w-full h-full">
-                              <polygon points="0,10 2.5,0 5,10 7.5,0 10,10 12.5,0 15,10 17.5,0 20,10 22.5,0 25,10 27.5,0 30,10 32.5,0 35,10 37.5,0 40,10 42.5,0 45,10 47.5,0 50,10 52.5,0 55,10 57.5,0 60,10 62.5,0 65,10 67.5,0 70,10 72.5,0 75,10 77.5,0 80,10 82.5,0 85,10 87.5,0 90,10 92.5,0 95,10 97.5,0 100,10 100,0 0,0" fill={outerBgColor} />
-                            </svg>
+                            <div className="absolute bottom-0 left-0 right-0 z-40 pointer-events-none h-4">
+                              <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none" className="w-full h-full">
+                                <polygon points="0,10 2.5,0 5,10 7.5,0 10,10 12.5,0 15,10 17.5,0 20,10 22.5,0 25,10 27.5,0 30,10 32.5,0 35,10 37.5,0 40,10 42.5,0 45,10 47.5,0 50,10 52.5,0 55,10 57.5,0 60,10 62.5,0 65,10 67.5,0 70,10 72.5,0 75,10 77.5,0 80,10 82.5,0 85,10 87.5,0 90,10 92.5,0 95,10 97.5,0 100,10 100,0 0,0" fill={outerBgColor} />
+                              </svg>
+                            </div>
                           </div>
-                        </div>
                         </div>
 
                         {/* Floating Profile Picture (Matching Reference) - Outside clip area */}
@@ -565,16 +564,47 @@ const Home = () => {
                         </div>
 
 
-                        <div className="absolute inset-0 z-40 pointer-events-auto overflow-hidden"
+                        <div className="absolute inset-0 z-40 pointer-events-auto overflow-hidden touch-none"
                           onMouseMove={(e) => { if (isDragging) handleDrag(isDragging, e); if (isResizing) handleResize(isResizing, e); }}
+                          onTouchMove={(e) => { if (isDragging) handleDrag(isDragging, e); }}
                           onMouseUp={() => { setIsDragging(null); setIsResizing(null); }}
                           onMouseLeave={() => { setIsDragging(null); setIsResizing(null); }}
+                          onTouchEnd={() => { setIsDragging(null); setIsResizing(null); }}
                         >
+                          {/* Draggable Wish Message */}
+                          <div
+                            className="absolute z-20 cursor-move select-none touch-none"
+                            style={{
+                              left: `${textX}%`,
+                              top: `${textY}%`,
+                              transform: 'translate(-50%, -50%)',
+                              width: '80%',
+                              textAlign: 'center'
+                            }}
+                            onMouseDown={(e) => { e.stopPropagation(); setIsDragging('wish'); }}
+                            onTouchStart={(e) => { e.stopPropagation(); setIsDragging('wish'); }}
+                          >
+                            <p
+                              className="font-black leading-tight italic tracking-tight drop-shadow-2xl"
+                              style={{
+                                fontSize: `${textSize}px`,
+                                color: textColor,
+                                fontFamily: fontFamily,
+                                textShadow: '0 4px 12px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.4)'
+                              }}
+                            >
+                              {customMessage || 'Type your message...'}
+                            </p>
+                          </div>
+
                           {decorations.map((deco) => {
                             const config = { 'heart': { icon: Heart, color: '#ef4444' }, 'star': { icon: Star, color: '#eab308' }, 'gift': { icon: Gift, color: '#ec4899' }, 'sparkle': { icon: Sparkles, color: '#06b6d4' }, 'party': { icon: PartyPopper, color: '#f97316' } }[deco.type] || { icon: Sparkles, color: '#6366f1' };
                             const Icon = config.icon;
                             return (
-                              <div key={deco.id} id={`deco-${deco.id}`} className="absolute cursor-move group select-none" style={{ left: `${deco.x}%`, top: `${deco.y}%`, width: `${deco.size}px`, height: `${deco.size}px`, transform: 'translate(-50%, -50%)' }} onMouseDown={(e) => { e.stopPropagation(); setIsDragging(deco.id); }}>
+                              <div key={deco.id} id={`deco-${deco.id}`} className="absolute cursor-move group select-none touch-none" style={{ left: `${deco.x}%`, top: `${deco.y}%`, width: `${deco.size}px`, height: `${deco.size}px`, transform: 'translate(-50%, -50%)' }}
+                                onMouseDown={(e) => { e.stopPropagation(); setIsDragging(deco.id); }}
+                                onTouchStart={(e) => { e.stopPropagation(); setIsDragging(deco.id); }}
+                              >
                                 {deco.type === 'internet' ? <img src={deco.url} className="w-full h-full object-contain" /> : <Icon size={deco.size} style={{ fill: config.color, color: '#fff' }} />}
                                 <button className="absolute -top-3 -right-3 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setDecorations(decorations.filter(d => d.id !== deco.id)); }}><X size={12} /></button>
                                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-white rounded-full border-2 border-primary cursor-nwse-resize opacity-0 group-hover:opacity-100" onMouseDown={(e) => { e.stopPropagation(); setIsResizing(deco.id); }}></div>
@@ -625,22 +655,26 @@ const Home = () => {
                               <div className="h-full flex items-center bg-surface/50 p-2 rounded-2xl border border-primary/10"><input type="range" min="16" max="72" className="w-full accent-primary" value={textSize} onChange={(e) => setTextSize(parseInt(e.target.value))} /></div>
                             </div>
                           </div>
-                          
+
                           <div className="flex flex-col gap-4 pt-4 border-t  border-white/5">
                             <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Layout & Sharing</label>
                             <div className="flex justify-between w-full gap-4">
                               <div className="flex flex-col gap-2 w-1/2">
                                 <label className="text-[9px] text-gray-500 font-bold uppercase px-1">Card Size</label>
-                                <div className="h-10 flex items-center bg-white/5 px-2 rounded-xl border border-white/10"><input type="range" min="320" max="600" className="w-full accent-primary" value={cardSize} onChange={(e) => setCardSize(parseInt(e.target.value))} /></div>
+                                <div className="h-10 flex items-center bg-white/5 px-2 rounded-xl border border-white/10"><input type="range" min="400" max="800" className="w-full accent-primary" value={cardSize} onChange={(e) => setCardSize(parseInt(e.target.value))} /></div>
                               </div>
-                              <div className="flex flex-col gap-2 mr-10">
+                              <div className="flex flex-col gap-2 ">
                                 <label className="text-[9px] text-gray-500 font-bold uppercase px-1">Outer BG</label>
                                 <div className="h-10 w-10 flex items-center bg-white/5 px-2 rounded-xl border border-white/10"><input type="color" value={outerBgColor} onChange={(e) => setOuterBgColor(e.target.value)} className="w-10 h-6 bg-transparent cursor-pointer" /></div>
+                              </div>
+                              <div className="flex flex-col gap-2">
+                                <label className="text-[9px] text-gray-500 font-bold uppercase px-1">Text</label>
+                                <div className="h-10 w-10 flex items-center bg-white/5 px-2 rounded-xl border border-white/10"><input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-10 h-10 rounded-xl bg-transparent border-none cursor-pointer p-0" /></div>
                               </div>
                             </div>
                           </div>
 
-                          <div className="grid grid-cols-2 gap-6">
+                          {/* <div className="grid grid-cols-2 gap-6">
                             <div className="flex flex-col gap-3">
                               <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Color</label>
                               <div className="flex items-center gap-3 bg-surface/50 p-2 rounded-2xl border border-primary/10"><input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-10 h-10 rounded-xl bg-transparent border-none cursor-pointer p-0" /></div>
@@ -651,7 +685,7 @@ const Home = () => {
                                 {['top', 'center', 'bottom'].map(pos => <button key={pos} onClick={() => setTextPosition(pos)} className={`flex-1 flex items-center justify-center rounded-xl transition-all ${textPosition === pos ? 'bg-primary text-black' : 'text-gray-500 hover:text-white'}`}><div className={`w-4 h-0.5 bg-current ${pos === 'top' ? 'mb-2' : pos === 'bottom' ? 'mt-2' : ''}`}></div></button>)}
                               </div>
                             </div>
-                          </div>
+                          </div> */}
 
                           <div className="flex flex-col gap-4">
                             <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Stickers</label>
@@ -744,38 +778,38 @@ const Home = () => {
                     {generatedLink ? (
                       <div className="bg-[#1a1a1a] border border-white/10 p-4 rounded-[2rem] shadow-2xl flex flex-col gap-4 backdrop-blur-xl w-full">
                         <div className="flex gap-2">
-                           <div className="flex-1 bg-surface/50 border border-primary/10 px-4 py-3 rounded-xl text-xs text-gray-300 truncate font-mono flex items-center">{generatedLink}</div>
-                           <button onClick={copyToClipboard} className={`p-3 rounded-xl transition-all flex-shrink-0 ${isCopied ? 'bg-green-500 text-white' : 'bg-white/5 text-gray-400 hover:text-white'}`}>{isCopied ? <Check size={18} /> : <Copy size={18} />}</button>
+                          <div className="flex-1 bg-surface/50 border border-primary/10 px-4 py-3 rounded-xl text-xs text-gray-300 truncate font-mono flex items-center">{generatedLink}</div>
+                          <button onClick={copyToClipboard} className={`p-3 rounded-xl transition-all flex-shrink-0 ${isCopied ? 'bg-green-500 text-white' : 'bg-white/5 text-gray-400 hover:text-white'}`}>{isCopied ? <Check size={18} /> : <Copy size={18} />}</button>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
-                           <button onClick={shareCard} disabled={isNativeSharing} className={`bg-primary text-black font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2 transition-all ${(isNativeSharing) ? 'opacity-50 cursor-wait' : 'active:scale-95'}`}>
-                             {(isNativeSharing) ? <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div> : <><Share2 size={16} /> Share</>}
-                           </button>
-                           <button onClick={downloadImage} disabled={isDownloading} className="bg-white/10 text-white font-black py-3 rounded-xl text-xs border border-white/10 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50">
-                             {isDownloading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <><Download size={16} /> Save</>}
-                           </button>
+                          <button onClick={shareCard} disabled={isNativeSharing} className={`bg-primary text-black font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2 transition-all ${(isNativeSharing) ? 'opacity-50 cursor-wait' : 'active:scale-95'}`}>
+                            {(isNativeSharing) ? <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div> : <><Share2 size={16} /> Share</>}
+                          </button>
+                          <button onClick={downloadImage} disabled={isDownloading} className="bg-white/10 text-white font-black py-3 rounded-xl text-xs border border-white/10 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50">
+                            {isDownloading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <><Download size={16} /> Save</>}
+                          </button>
                         </div>
                       </div>
                     ) : (
                       <div className="flex items-center gap-2 w-full">
-                        <button 
+                        <button
                           onClick={() => setIsMobileSettingsOpen(true)}
                           className="w-12 h-12 flex-shrink-0 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full flex items-center justify-center text-white active:scale-95 transition-all shadow-2xl"
                         >
                           <Settings2 size={20} />
                         </button>
                         <div className="flex-1 relative flex items-center">
-                          <input 
-                            type="text" 
+                          <input
+                            type="text"
                             value={customMessage}
                             onChange={(e) => setCustomMessage(e.target.value)}
                             placeholder="Type your wish..."
                             className="w-full bg-white/10 backdrop-blur-xl border border-white/20 p-4 pr-12 rounded-[2rem] text-white text-sm focus:outline-none focus:border-primary/50 shadow-2xl"
                           />
-                          <button 
-                             onClick={handleShare}
-                             disabled={isGenerating}
-                             className="absolute right-2 w-9 h-9 bg-primary text-black rounded-full flex items-center justify-center active:scale-90 transition-all disabled:opacity-50"
+                          <button
+                            onClick={handleShare}
+                            disabled={isGenerating}
+                            className="absolute right-2 w-9 h-9 bg-primary text-black rounded-full flex items-center justify-center active:scale-90 transition-all disabled:opacity-50"
                           >
                             {isGenerating ? <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div> : <Wand2 size={18} />}
                           </button>
@@ -790,14 +824,14 @@ const Home = () => {
                       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileSettingsOpen(false)}></div>
                       <div className="relative w-full max-w-lg bg-[#1a1a1a] border-t border-white/10 rounded-t-[2.5rem] md:rounded-[2.5rem] p-8 animate-[slideUp_0.3s_ease_out] max-h-[85vh] overflow-y-auto">
                         <div className="flex justify-between items-center mb-8">
-                           <h3 className="text-xl font-black text-white">Design Tools</h3>
-                           <button onClick={() => setIsMobileSettingsOpen(false)} className="p-2 bg-white/5 rounded-xl text-gray-400"><X size={20} /></button>
+                          <h3 className="text-xl font-black text-white">Design Tools</h3>
+                          <button onClick={() => setIsMobileSettingsOpen(false)} className="p-2 bg-white/5 rounded-xl text-gray-400"><X size={20} /></button>
                         </div>
-                        
+
                         {/* Reuse the controls content (Simplified for mobile) */}
                         <div className="flex flex-col gap-8 pb-10">
-                           {/* Typography & Size */}
-                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {/* Typography & Size */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="flex flex-col gap-3">
                               <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Typography</label>
                               <div className="relative group">
@@ -859,14 +893,14 @@ const Home = () => {
                               </div>
                             </div>
                             <div className="flex flex-col gap-3">
-                              <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Position</label>
+                              {/* <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Position</label>
                               <div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/10 h-16">
                                 {['top', 'center', 'bottom'].map((pos) => (
                                   <button key={pos} onClick={() => setTextPosition(pos)} className={`flex-1 flex items-center justify-center rounded-xl transition-all ${textPosition === pos ? 'bg-primary text-black shadow-lg scale-100' : 'text-gray-400 hover:bg-white/5'}`}>
                                     {pos === 'top' ? <Minus className="rotate-0 -translate-y-2" size={24} /> : pos === 'center' ? <Minus size={24} /> : <Minus className="translate-y-2" size={24} />}
                                   </button>
                                 ))}
-                              </div>
+                              </div> */}
                             </div>
                           </div>
 
@@ -881,13 +915,13 @@ const Home = () => {
                                 </button>
                               ))}
                             </div>
-                            
+
                             {/* Internet Sticker Search (Mobile) */}
                             <div className="flex gap-2">
                               <div className="flex-1 relative">
-                                <input 
-                                  type="text" 
-                                  placeholder="Search internet stickers..." 
+                                <input
+                                  type="text"
+                                  placeholder="Search internet stickers..."
                                   value={stickerSearchQuery}
                                   onChange={(e) => setStickerSearchQuery(e.target.value)}
                                   onKeyPress={(e) => e.key === 'Enter' && searchInternetStickers()}
@@ -913,12 +947,12 @@ const Home = () => {
 
                         {/* Modal Footer */}
                         <div className="mt-8">
-                           <button 
-                             onClick={() => setIsMobileSettingsOpen(false)}
-                             className="w-full bg-gradient-to-r from-primary to-secondary text-black font-black py-4 rounded-2xl text-sm shadow-xl"
-                           >
-                             Save Changes
-                           </button>
+                          <button
+                            onClick={() => setIsMobileSettingsOpen(false)}
+                            className="w-full bg-gradient-to-r from-primary to-secondary text-black font-black py-4 rounded-2xl text-sm shadow-xl"
+                          >
+                            Save Changes
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -962,11 +996,12 @@ const Home = () => {
                     {template.isPremium && <div className="absolute top-4 right-4 bg-yellow-500 text-black text-[10px] font-black px-2 py-1 rounded shadow-xl flex items-center gap-1 z-10"><Crown size={10} /> PRO</div>}
                   </div>
                 ))}
-              </div>)}
-
-              {!templates.length && <div className="flex h-fit w-full justify-center">No templates found</div>}
-              
               </div>
+            )}
+
+            {!templates.length && <div className="flex h-fit w-full justify-center">No templates found</div>}
+
+          </div>
 
         </div>
       </div>
