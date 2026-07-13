@@ -67,7 +67,7 @@ const AppContent = () => {
 
 function App() {
   return (
-    <Router basename={import.meta.env.BASE_URL}>
+    <Router >
       <AppContent />
     </Router>
   );
